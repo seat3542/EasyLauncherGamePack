@@ -72,4 +72,4 @@ a GNU GPL-compatible license.
  └─────────────────┘
  <standards go here>
  This project has been tested on:
-	openSUSE 13.1 64 bit
+	openSUSE 13.1 64 bit 
