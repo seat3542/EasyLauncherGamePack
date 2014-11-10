@@ -56,5 +56,5 @@ a GNU GPL-compatible license.
 <h5>Testing</h5>
  <standards go here> <br />
  This project has been tested on:  <br />
-  *openSUSE 13.1 64 bit 
+  * openSUSE 13.1 64 bit 
 </p>
