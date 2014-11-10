@@ -1,4 +1,4 @@
-╔════════════════════════════╗
+╔════════════════════════════╗ <br />
 ║  EASY LAUNCHER GAME PACK   ║
 ║    originally created by   ║
 ║ littlefiredragon & seat3542║
