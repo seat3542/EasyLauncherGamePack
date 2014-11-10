@@ -46,7 +46,7 @@ a GNU GPL-compatible license.
 <p>
 <h5>Coding Standards</h5>
  ALL languages must have function descriptions. <br />
-   PYTHON: http://legacy.python.org/dev/peps/pep-0008/  <br />
+   [PYTHON](http://legacy.python.org/dev/peps/pep-0008/)  <br />
    C:      http://users.ece.cmu.edu/~eno/coding/CCodingStandard.html  <br />
    C++:    http://www.possibility.com/Cpp/CppCodingStandard.html  <br />
    JAVA:  <br />
