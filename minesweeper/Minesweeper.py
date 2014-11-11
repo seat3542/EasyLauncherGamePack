@@ -57,7 +57,7 @@ class Minesweeper ():
 									textvariable=self.__numMines)
 		self.minesDisplay.grid (column=2, row=1, padx=10)
 		self.newGame = Button(self.header, text="New Game", 
-							command=self.revealAll)
+							command=self.newGame)
 		self.newGame.grid (column=3, row=0, rowspan=2, sticky=N+S+E+W,
 							padx=10)
 		self.gamewindow = Frame(self.mainframe)
@@ -194,6 +194,27 @@ class Minesweeper ():
 	
 	def incrementFlags (self):
 		self.__numFlags.set (self.__numFlags.get() + 1)
+		
+	def getUnrevealed (self):
+		return self.__spacesUnrevealed
+	
+	def getMines (self):
+		return self.__numMines.get()
+		
+	def newGame (self):
+		self.gameOver = False
+		self.__size.set (16)
+		self.__score.set (0)
+		self.__numMines.set (25)
+		self.__numFlags.set (0)
+		self.resetBoard ()
+		self.generateMines()
+		self.setBordered()
+	
+	def resetBoard (self):
+		for i in range(0,self.__size.get()):
+			for j in range(0,self.__size.get()):
+				self.board[i][j].reset()
 
 	def run(self):
 		self.root.mainloop()
@@ -208,12 +229,22 @@ class boardentry ():
 		self.__col = column
 		self.__row = row
 		self.UIbutton = Button(parent.gamewindow,
-								image=parent.images["blank"])
-		self.UIbutton.config(activeforeground="grey", activebackground="grey")
+								image=parent.images["blank"],
+								activeforeground="light grey", 
+								activebackground="light grey")
 		self.UIbutton.grid(column=column, row=row)
 		self.UIbutton.bind('<Button-1>', self.checkEntry)
 		self.UIbutton.bind('<ButtonRelease-1>', self.sink)
 		self.UIbutton.bind('<Button-3>', self.flagEntry)
+	
+	def reset (self):
+		self.__mine = False
+		self.__flag = False
+		self.__bordered = 0
+		self.__revealed = False
+		self.UIbutton.config (image=self.__parent.images["blank"],
+								relief=RAISED)
+		self.UIbutton.bind('<Button-1>', self.checkEntry)
 	
 	def checkEntry (self,buttonpush):
 		if self.__mine == True:
@@ -222,12 +253,17 @@ class boardentry ():
 			self.__parent.revealAdjacentBlanks (self.__row, self.__col)
 		else:
 			self.revealEntry(buttonpush)
+		if self.__parent.getUnrevealed () == self.__parent.getMines ():
+			self.__parent.gameOver = True
 	
 	def revealEntry (self, buttonpush):
 		self.__parent.decrementUnrevealed()
 		self.__revealed = True
 		if self.__mine == False and self.__parent.gameOver == False:
 			self.__parent.increaseScore()
+			if self.__flag == True:
+				self.__flag = False
+				self.__parent.decrementFlags()
 		if self.__mine == True and self.__flag == True:
 			self.UIbutton.config(image=self.__parent.images["flagmine"])
 		elif self.__mine == True:
@@ -242,14 +278,15 @@ class boardentry ():
 		self.UIbutton.config(command=0, relief=FLAT)
 	
 	def flagEntry (self, buttonpush):
-		if self.__flag == False:
-			self.__flag = True
-			self.UIbutton.config(image=self.__parent.images["flag"])
-			self.__parent.incrementFlags()
-		else:
-			self.__flag = False
-			self.UIbutton.config(image=self.__parent.images["blank"])
-			self.__parent.decrementFlags()
+		if self.__revealed == False:
+			if self.__flag == False:
+				self.__flag = True
+				self.UIbutton.config(image=self.__parent.images["flag"])
+				self.__parent.incrementFlags()
+			else:
+				self.__flag = False
+				self.UIbutton.config(image=self.__parent.images["blank"])
+				self.__parent.decrementFlags()
 	
 	def setMine (self, mine):
 		self.__mine = mine
