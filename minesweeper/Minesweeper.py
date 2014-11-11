@@ -12,11 +12,16 @@ class Minesweeper ():
 	def __init__(self):
 		self.root = Tk()
 		self.root.title("Minesweeper")
+		self.gameOver = False
 		self.__size = IntVar ()
 		self.__size.set (16)
 		self.__score = IntVar ()
 		self.__score.set (0)
-		self.__numMines = 25
+		self.__numMines = IntVar ()
+		self.__numMines.set (25)
+		self.__numFlags = IntVar ()
+		self.__numFlags.set (0)
+		self.__spacesUnrevealed = self.__size.get() * self.__size.get()
 		# Set up images
 		self.images = {}
 		self.images[1] = PhotoImage(file="1.png")
@@ -35,12 +40,26 @@ class Minesweeper ():
 		self.mainframe = Frame(self.root)
 		self.mainframe.grid (column=0, row=0)
 		self.header = Frame(self.mainframe)
-		self.header.grid (column=0, row=0)
-		self.label = Label(self.header, textvariable=self.__score)
-		self.label.grid (column=0, row=0)
-		self.DEBUG = Button(self.header, text="DEBUG", 
+		self.header.grid (column=0, row=0, sticky=W+E)
+		self.scoreLabel = Label(self.header, text="Score:")
+		self.scoreLabel.grid (column=0, row=0)
+		self.scoreDisplay = Label(self.header, relief=SUNKEN, width=5,
+									textvariable=self.__score)
+		self.scoreDisplay.grid (column=0, row=1, padx=10)
+		self.flagsLabel = Label(self.header, image=self.images["flag"])
+		self.flagsLabel.grid (column=1, row=0)
+		self.flagsDisplay = Label(self.header, relief=SUNKEN, width=5,
+									textvariable=self.__numFlags)
+		self.flagsDisplay.grid (column=1, row=1, padx=10)
+		self.minesLabel = Label(self.header, image=self.images["mine"])
+		self.minesLabel.grid (column=2, row=0)
+		self.minesDisplay = Label(self.header, relief=SUNKEN, width=5,
+									textvariable=self.__numMines)
+		self.minesDisplay.grid (column=2, row=1, padx=10)
+		self.newGame = Button(self.header, text="New Game", 
 							command=self.revealAll)
-		self.DEBUG.grid (column=1, row=0)
+		self.newGame.grid (column=3, row=0, rowspan=2, sticky=N+S+E+W,
+							padx=10)
 		self.gamewindow = Frame(self.mainframe)
 		self.gamewindow.grid (column=0, row=1)
 		#initialize board
@@ -56,7 +75,7 @@ class Minesweeper ():
 
 	def generateMines (self):
 		mineLocation = []
-		for x in range(0, self.__numMines):
+		for x in range(0, self.__numMines.get()):
 			mineLocation.append((randint(0, self.__size.get() - 1), 
 								randint(0, self.__size.get() - 1)))
 			if x > 0:
@@ -104,40 +123,77 @@ class Minesweeper ():
 			if self.board[row-1][column-1].getBordered() == 0 \
 					and self.board[row-1][column-1].getRevealed() == False:
 				self.revealAdjacentBlanks (row-1, column-1)
+			elif self.board[row-1][column-1].getRevealed() == False:
+				self.board[row-1][column-1].revealEntry ('<Button-1>')
+				self.board[row-1][column-1].sink ('<ButtonRelease-1>')
 		if column > 0:
 			if self.board[row][column-1].getBordered() == 0 \
 					and self.board[row][column-1].getRevealed() == False:
 				self.revealAdjacentBlanks (row, column-1)
+			elif self.board[row][column-1].getRevealed() == False:
+				self.board[row][column-1].revealEntry ('<Button-1>')
+				self.board[row][column-1].sink ('<ButtonRelease-1>')
 		if column > 0 and row < self.__size.get() - 1:
 			if self.board[row+1][column-1].getBordered() == 0 \
 					and self.board[row+1][column-1].getRevealed() == False:
 				self.revealAdjacentBlanks (row+1, column-1)
+			elif self.board[row+1][column-1].getRevealed() == False:
+				self.board[row+1][column-1].revealEntry ('<Button-1>')
+				self.board[row+1][column-1].sink ('<ButtonRelease-1>')
 		if row > 0:
 			if self.board[row-1][column].getBordered() == 0 \
 					and self.board[row-1][column].getRevealed() == False:
 				self.revealAdjacentBlanks (row-1, column)
+			elif self.board[row-1][column].getRevealed() == False:
+				self.board[row-1][column].revealEntry ('<Button-1>')
+				self.board[row-1][column].sink ('<ButtonRelease-1>')
 		if row < self.__size.get() - 1:
 			if self.board[row+1][column].getBordered() == 0 \
 					and self.board[row+1][column].getRevealed() == False:
 				self.revealAdjacentBlanks (row+1, column)
+			elif self.board[row+1][column].getRevealed() == False:
+				self.board[row+1][column].revealEntry ('<Button-1>')
+				self.board[row+1][column].sink ('<ButtonRelease-1>')
 		if row > 0 and column < self.__size.get() - 1:
 			if self.board[row-1][column+1].getBordered() == 0 \
 					and self.board[row-1][column+1].getRevealed() == False:
 				self.revealAdjacentBlanks (row-1, column+1)
+			elif self.board[row-1][column+1].getRevealed() == False:
+				self.board[row-1][column+1].revealEntry ('<Button-1>')
+				self.board[row-1][column+1].sink ('<ButtonRelease-1>')
 		if column < self.__size.get() - 1:
 			if self.board[row][column+1].getBordered() == 0 \
 					and self.board[row][column+1].getRevealed() == False:
 				self.revealAdjacentBlanks (row, column+1)
+			elif self.board[row][column+1].getRevealed() == False:
+				self.board[row][column+1].revealEntry ('<Button-1>')
+				self.board[row][column+1].sink ('<ButtonRelease-1>')
 		if row < self.__size.get() - 1 and column < self.__size.get() - 1:
 			if self.board[row+1][column+1].getBordered() == 0 \
 					and self.board[row+1][column+1].getRevealed() == False:
 				self.revealAdjacentBlanks (row+1, column+1)
+			elif self.board[row+1][column+1].getRevealed() == False:
+				self.board[row+1][column+1].revealEntry ('<Button-1>')
+				self.board[row+1][column+1].sink ('<ButtonRelease-1>')
 	
 	def revealAll (self):
+		self.gameOver = True
 		for x in range(0, self.__size.get()):
 			for y in range(0, self.__size.get()):
 				self.board[x][y].revealEntry('<Button-1>')
 				self.board[x][y].sink('<ButtonRelease-1>')
+	
+	def increaseScore (self):
+		self.__score.set (self.__score.get() + 1)
+	
+	def decrementUnrevealed (self):
+		self.__spacesUnrevealed += -1
+	
+	def decrementFlags (self):
+		self.__numFlags.set (self.__numFlags.get() - 1)
+	
+	def incrementFlags (self):
+		self.__numFlags.set (self.__numFlags.get() + 1)
 
 	def run(self):
 		self.root.mainloop()
@@ -162,13 +218,16 @@ class boardentry ():
 	def checkEntry (self,buttonpush):
 		if self.__mine == True:
 			self.__parent.revealAll()
-		if self.__bordered == 0:
+		elif self.__bordered == 0:
 			self.__parent.revealAdjacentBlanks (self.__row, self.__col)
 		else:
 			self.revealEntry(buttonpush)
 	
 	def revealEntry (self, buttonpush):
+		self.__parent.decrementUnrevealed()
 		self.__revealed = True
+		if self.__mine == False and self.__parent.gameOver == False:
+			self.__parent.increaseScore()
 		if self.__mine == True and self.__flag == True:
 			self.UIbutton.config(image=self.__parent.images["flagmine"])
 		elif self.__mine == True:
@@ -186,9 +245,11 @@ class boardentry ():
 		if self.__flag == False:
 			self.__flag = True
 			self.UIbutton.config(image=self.__parent.images["flag"])
+			self.__parent.incrementFlags()
 		else:
 			self.__flag = False
 			self.UIbutton.config(image=self.__parent.images["blank"])
+			self.__parent.decrementFlags()
 	
 	def setMine (self, mine):
 		self.__mine = mine
