@@ -60,8 +60,8 @@ class Minesweeper ():
 							command=self.newGame)
 		self.newGame.grid (column=3, row=0, rowspan=2, sticky=N+S+E+W,
 							padx=10)
-		self.gamewindow = Frame(self.mainframe)
-		self.gamewindow.grid (column=0, row=1)
+		self.gamewindow = Frame(self.mainframe, border=1, relief=SUNKEN)
+		self.gamewindow.grid (column=0, row=1, pady=2)
 		#initialize board
 		self.board = []
 		for i in range(0,self.__size.get()):
@@ -78,11 +78,11 @@ class Minesweeper ():
 		for x in range(0, self.__numMines.get()):
 			mineLocation.append((randint(0, self.__size.get() - 1), 
 								randint(0, self.__size.get() - 1)))
-			if x > 0:
-				for y in range(0, x-1):
-					while mineLocation[x] == mineLocation[y]:
-						mineLocation[x] = ((randint(0, self.__size.get() - 1), 
-											randint(0, self.__size.get() - 1)))
+			#if x > 0:
+			for y in range(0, x):
+				while mineLocation[x] == mineLocation[y]:
+					mineLocation[x] = ((randint(0, self.__size.get() - 1), 
+										randint(0, self.__size.get() - 1)))
 			self.board[mineLocation[x][0]][mineLocation[x][1]].setMine (True)
 
 	def setBordered (self):
@@ -257,21 +257,22 @@ class boardentry ():
 			self.__parent.gameOver = True
 	
 	def revealEntry (self, buttonpush):
-		self.__parent.decrementUnrevealed()
-		self.__revealed = True
-		if self.__mine == False and self.__parent.gameOver == False:
-			self.__parent.increaseScore()
-			if self.__flag == True:
-				self.__flag = False
-				self.__parent.decrementFlags()
-		if self.__mine == True and self.__flag == True:
-			self.UIbutton.config(image=self.__parent.images["flagmine"])
-		elif self.__mine == True:
-			self.UIbutton.config(image=self.__parent.images["mine"])
-		elif self.__bordered == 0:
-			self.UIbutton.config(image=self.__parent.images["blank"])
-		else:
-			self.UIbutton.config(
+		if self.__revealed == False:
+			self.__parent.decrementUnrevealed()
+			self.__revealed = True
+			if self.__mine == False and self.__parent.gameOver == False:
+				self.__parent.increaseScore()
+				if self.__flag == True:
+					self.__flag = False
+					self.__parent.decrementFlags()
+			if self.__mine == True and self.__flag == True:
+				self.UIbutton.config(image=self.__parent.images["flagmine"])
+			elif self.__mine == True:
+				self.UIbutton.config(image=self.__parent.images["mine"])
+			elif self.__bordered == 0:
+				self.UIbutton.config(image=self.__parent.images["blank"])
+			else:
+				self.UIbutton.config(
 							image=self.__parent.images[self.__bordered])
 			
 	def sink (self, buttonrelease):
