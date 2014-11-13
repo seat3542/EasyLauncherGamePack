@@ -22,7 +22,8 @@ a GNU GPL-compatible license.
 <h4>Rules of Contribution</h4>
 <h5>Licence</h5>
  This project is licensed under GNU GPL. All components must be compatible
- with the GPL license.
+ with the GPL license. Graphics and other arts included are licensed as
+ Creative Commons Attribution-Noncommercial-Sharealike.
 </p>
 <p>
 <h5>Bug Reports</h5>
