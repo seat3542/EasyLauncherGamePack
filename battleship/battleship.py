@@ -15,19 +15,26 @@ class Battleship():
 		self.root = Tk()
 		self.root.title("Battleship")
 		self.images = {}
+		self.boundaries = {}
 		self.leftLabels = []
 		self.rightLabels = []
 		self.loadImages()
 		self.message = StringVar()
-		self.message.set("This is much harder than it should be.")
+		self.message.set("Yarrr, matey. This game be unfinished!")
 		self.buildGUI()
+		self.setBoundaries()
+		self.hoverIconType = "longship"
+		self.hoverIcon = self.ocean.create_image(3, 3,
+								image=self.images[self.hoverIconType],
+								state=HIDDEN, anchor=NW,)
 		
+		#NOTE TO SELF: grid will be a dictionary. Keys will be NumLets.
+		#            Contents will be dictionary: [Whatship] and [IsHit]
 	
 	def buildGUI(self):
 		self.contentFrame = Frame(self.root)
 		self.contentFrame.grid(row=0, column=0)
-		self.topBar = Frame(self.contentFrame, border=2, relief=RAISED, 
-							bg="red")
+		self.topBar = Frame(self.contentFrame, border=2, relief=RAISED)
 		self.topBar.grid(row=0, column=0, columnspan=23, sticky=E+W)
 		self.newGameButton = Button(self.topBar, text="New Game")
 		self.newGameButton.grid(row=0, column=0)
@@ -41,8 +48,10 @@ class Battleship():
 			self.leftLabels[i].grid(row=1, column=(i+1))
 			self.rightLabels[i].grid(row=1, column=(i+12))
 		for i in range(10, 20):
-			self.leftLabels.append(Label(self.contentFrame, text=i+1))
-			self.rightLabels.append(Label(self.contentFrame, text=i+1))
+			self.leftLabels.append(Label(self.contentFrame, 
+										 text=chr(55+i)))
+			self.rightLabels.append(Label(self.contentFrame, 
+										  text=chr(55+i)))
 			self.leftLabels[i].grid(row=(i-8), column=0)
 			self.rightLabels[i].grid(row=(i-8), column=22)
 		#Maps
@@ -52,23 +61,28 @@ class Battleship():
 		self.parchment = Canvas(self.contentFrame, height=241, 
 								width=241, relief=SUNKEN, border=2)
 		self.parchment.grid(row=2, column=12, rowspan=10, columnspan=10)
+		self.ocean.bind("<Button-1>", self.canvasLClick)
+		self.parchment.bind("<Button-1>", self.canvasLClick)
+		self.ocean.bind("<Motion>", self.mouseOverOcean)
+		self.ocean.bind("<Leave>", self.hideGhostShip)
 		# Ship quickview displays
 		self.shipsLabel = Label(self.contentFrame, text="Your\nShips")
 		self.shipsLabel.grid(row=12, column=11)
 		self.longshipBox = Canvas(self.contentFrame, height=25, 
-								  width=121, relief=SUNKEN, border=2)
+								  width=121, relief=SUNKEN, border=2,
+								  bg="#4C8ED4")
 		self.longshipBox.grid(column=1, row=13, columnspan=5)
 		self.frigateBox = Canvas(self.contentFrame, height=25, width=97,
-								 relief=SUNKEN, border=2)
+								 relief=SUNKEN, border=2, bg="#4C8ED4")
 		self.frigateBox.grid(row=13, column=7, columnspan=4)
 		self.brigBox = Canvas(self.contentFrame, height=25, width=73,
-							  relief=SUNKEN, border=2)
+							  relief=SUNKEN, border=2, bg="#4C8ED4")
 		self.brigBox.grid(row=13, column=12, columnspan=3)
 		self.schoonerBox = Canvas(self.contentFrame, height=25, width=73,
-							  relief=SUNKEN, border=2)
+							  relief=SUNKEN, border=2, bg="#4C8ED4")
 		self.schoonerBox.grid(row=13, column=16, columnspan=3)
 		self.sloopBox = Canvas(self.contentFrame, height=25, width=49,
-							   relief=SUNKEN, border=2)
+							   relief=SUNKEN, border=2, bg="#4C8ED4")
 		self.sloopBox.grid(row=13, column=20, columnspan=2)
 		# Ship quickview labels
 		self.longshipLabel = Label(self.contentFrame, text="Longship")
@@ -86,6 +100,11 @@ class Battleship():
 								anchor=NW)
 		self.parchment.create_image(3, 3, anchor=NW,
 									image=self.images["parchment"])
+		self.placeOnCanvas (self.longshipBox, "longship", (1, 'A'))
+		self.placeOnCanvas (self.frigateBox, "frigate", (1, 'A'))
+		self.placeOnCanvas (self.brigBox, "brig", (1, 'A'))
+		self.placeOnCanvas (self.schoonerBox, "schooner", (1, 'A'))
+		self.placeOnCanvas (self.sloopBox, "sloop", (1, 'A'))
 		
 	def loadImages (self):
 		self.images["ocean"] = PhotoImage(
@@ -116,15 +135,65 @@ class Battleship():
 				file="battleshipRedXTransparent.png")
 		self.images["whiteX"] = PhotoImage(
 				file="battleshipWhiteXTransparent.png")
-				
+		
+	def setBoundaries (self):
+		self.boundaries["longshipV"] = (10, 'F')
+		self.boundaries["longship"] = (6, 'J')
+		self.boundaries["frigateV"] = (10, 'G')
+		self.boundaries["frigate"] = (7, 'J')
+		self.boundaries["brigV"] = (10, 'H')
+		self.boundaries["brig"] = (8, 'J')
+		self.boundaries["schoonerV"] = (10, 'H')
+		self.boundaries["schooner"] = (8, 'J')
+		self.boundaries["sloopV"] = (10, 'I')
+		self.boundaries["sloop"] = (9, 'J')		
 	
-	def placeOnCanvas (self, whichCanvas, item, x, y):
-		whichCanvas.create_image(3 + (x-1)*24, 3 + (y-1)*24, 
-								 image=self.images[item], anchor=NW)
+	def placeOnCanvas (self, whichCanvas, item, location):
+		return whichCanvas.create_image(self.convertToCoord (location),
+								 anchor=NW, image=self.images[item])
+		
+	def canvasLClick (self, leftclick):
+		print(self.convertToNumLet(leftclick))
+		
+	def hideGhostShip (self, mouseleave):
+		self.ocean.itemconfig(self.hoverIcon, state=HIDDEN)
+	
+	def mouseOverOcean (self, mouse):
+		locationNumLet = self.convertToNumLet(mouse)
+		locationCoord = self.convertToCoord(locationNumLet)
+		if (locationNumLet[0] <= 
+						self.boundaries[self.hoverIconType][0] and
+						locationNumLet[1] <= 
+						self.boundaries[self.hoverIconType][1]):
+			self.ocean.coords(self.hoverIcon, locationCoord)
+			self.ocean.itemconfig(self.hoverIcon, state=NORMAL)
+		elif (locationNumLet[0] <= 
+				self.boundaries[self.hoverIconType][0]):
+			self.ocean.coords(
+					self.hoverIcon, (locationCoord[0], 3 + 24 *
+					(ord(self.boundaries[self.hoverIconType][1])-65)))
+			self.ocean.itemconfig(self.hoverIcon, state=NORMAL)
+		elif (locationNumLet[1] <= 
+				self.boundaries[self.hoverIconType][1]):
+			self.ocean.coords(self.hoverIcon, (3 + 24*
+							 (self.boundaries[self.hoverIconType][0]-1),
+							  locationCoord[1]))
+			self.ocean.itemconfig(self.hoverIcon, state=NORMAL)
+		
+	def convertToNumLet (self, mouse):
+		number = int((mouse.x - 4) / 24) + 1
+		letter = chr(65+int((mouse.y - 4) / 24))
+		return (number, letter)
+	
+	def convertToCoord (self, NumLet):
+		return (3 + (NumLet[0]-1)*24, 3 + (ord(NumLet[1])-65)*24)
 		
 	def run(self):
 		""" Run Battleship"""
 		self.root.mainloop()
+
+
+
 
 if __name__ == '__main__':
 	app = Battleship()
