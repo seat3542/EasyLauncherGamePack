@@ -14,33 +14,44 @@ class Battleship():
 	def __init__(self):
 		self.root = Tk()
 		self.root.title("Battleship")
-		self.phase = "setup"
-		self.images = {}
-		self.boundaries = {}
-		self.oceanGrid = {}
-		self.parchmentGrid = {}
-		self.leftLabels = []
-		self.rightLabels = []
-		self.playerShips = {}
-		self.CPUShips = {}
-		self.hiddenShips = [0, 1, 2, 3, 4]
-		self.loadImages()
-		self.shipsPlaced = 0
 		self.message = StringVar()
-		self.message.set(" ")
+		self.images = {}
+		self.setupVariables()
+		self.loadImages()
 		self.buildGUI()
 		self.setBoundaries()
+		self.newGame()
+		
+	def setupVariables (self):
+		self.hiddenShips = [0, 1, 2, 3, 4]
+		self.shipsPlaced = 0
+		self.phase = "setup"
+		self.ghostShipType = "longship"
+		self.message.set(" ")
+	
+	def newGame (self):
+		self.ocean.delete("all")
+		self.parchment.delete("all")
+		self.longshipBox.delete("all")
+		self.frigateBox.delete("all")
+		self.schoonerBox.delete("all")
+		self.brigBox.delete("all")
+		self.sloopBox.delete("all")
+		self.setupCanvases()
+		self.setupVariables()
+		self.createMapGhosts()
 		self.buildGrids()
 		self.setupShipHealth()
-		self.ghostShipType = "longship"
+		self.placeShipsUpdate()
+		self.generateParchmentGrid()
+	
+	def createMapGhosts (self):
 		self.ghostShip = self.ocean.create_image(3, 3,
 								image=self.images[self.ghostShipType],
 								state=HIDDEN, anchor=NW,)
 		self.ghostX = self.parchment.create_image(3, 3,
 								image=self.images["whiteX"],
 								state=HIDDEN, anchor=NW,)
-		self.placeShipsUpdate()
-		self.generateParchmentGrid()
 	
 	def buildGUI(self):
 		self.contentFrame = Frame(self.root)
@@ -48,7 +59,8 @@ class Battleship():
 		self.topBar = Frame(self.contentFrame, border=2, relief=RAISED,
 							pady=3)
 		self.topBar.grid(row=0, column=0, columnspan=23, sticky=E+W)
-		self.newGameButton = Button(self.topBar, text="New Game")
+		self.newGameButton = Button(self.topBar, text="New Game",
+									command=self.newGame)
 		self.newGameButton.grid(row=0, column=0)
 		self.messageBox = Label(self.topBar, textvariable=self.message,
 								height=2)
@@ -61,18 +73,36 @@ class Battleship():
 		self.topBar.grid_columnconfigure(0, weight=1)
 		self.topBar.grid_rowconfigure(0, weight=1)
 		# Map grid labels
+		self.leftLabels = []
+		self.rightLabels = []
+		self.leftBar = Frame(self.contentFrame, pady=4)
+		self.leftBar.grid (column=0, row=2, rowspan=10, sticky=N+S)
+		for row in range (0, 10):
+			self.leftBar.grid_rowconfigure(row, weight=1)
+		self.rightBar = Frame(self.contentFrame, pady=4)
+		self.rightBar.grid (column=22, row=2, rowspan=10, sticky=N+S)
+		for row in range (0, 10):
+			self.rightBar.grid_rowconfigure(row, weight=1)
+		self.topLeftBar = Frame(self.contentFrame, padx=4)
+		self.topLeftBar.grid (column=1, row=1, columnspan=10, sticky=W+E)
+		for column in range (0, 9):
+			self.topLeftBar.grid_columnconfigure(column, weight=1)
+		self.topRightBar = Frame(self.contentFrame, padx=4)
+		self.topRightBar.grid (column=12, row=1, columnspan=10, sticky=W+E)
+		for column in range (0, 9):
+			self.topRightBar.grid_columnconfigure(column, weight=1)
 		for i in range(0, 10):
-			self.leftLabels.append(Label(self.contentFrame, text=i+1))
-			self.rightLabels.append(Label(self.contentFrame, text=i+1))
-			self.leftLabels[i].grid(row=1, column=(i+1))
-			self.rightLabels[i].grid(row=1, column=(i+12))
+			self.leftLabels.append(Label(self.topLeftBar, text=i+1))
+			self.rightLabels.append(Label(self.topRightBar, text=i+1))
+			self.leftLabels[i].grid(row=0, column=(i))
+			self.rightLabels[i].grid(row=0, column=(i))
 		for i in range(10, 20):
-			self.leftLabels.append(Label(self.contentFrame, 
+			self.leftLabels.append(Label(self.leftBar, 
 										 text=chr(55+i)))
-			self.rightLabels.append(Label(self.contentFrame, 
+			self.rightLabels.append(Label(self.rightBar, 
 										  text=chr(55+i)))
-			self.leftLabels[i].grid(row=(i-8), column=0)
-			self.rightLabels[i].grid(row=(i-8), column=22)
+			self.leftLabels[i].grid(row=(i-10), column=0)
+			self.rightLabels[i].grid(row=(i-10), column=0)
 		# Maps
 		self.ocean = Canvas(self.contentFrame, height=241, width=241,
 							relief=SUNKEN, border=2)
@@ -118,7 +148,8 @@ class Battleship():
 		self.schoonerLabel.grid(row=14, column=16, columnspan=3)
 		self.sloopLabel = Label(self.contentFrame, text="Sloop")
 		self.sloopLabel.grid(row=14, column=20, columnspan=2)
-		# Draw on canvas
+		
+	def setupCanvases (self):
 		self.ocean.create_image(3, 3, image=self.images["ocean"],
 								anchor=NW)
 		self.parchment.create_image(3, 3, anchor=NW,
@@ -160,6 +191,7 @@ class Battleship():
 				file="battleshipWhiteXTransparent.png")
 		
 	def setBoundaries (self):
+		self.boundaries = {}
 		self.boundaries["longshipV"] = (10, 'F')
 		self.boundaries["longship"] = (6, 'J')
 		self.boundaries["frigateV"] = (10, 'G')
@@ -172,6 +204,8 @@ class Battleship():
 		self.boundaries["sloop"] = (9, 'J')		
 	
 	def setupShipHealth (self):
+		self.playerShips = {}
+		self.CPUShips = {}
 		self.playerShips["longship"] = 5
 		self.playerShips["frigate"] = 4
 		self.playerShips["schooner"] = 3
@@ -273,6 +307,8 @@ class Battleship():
 		return (3 + (NumLet[0]-1)*24, 3 + (ord(NumLet[1])-65)*24)
 		
 	def buildGrids (self):
+		self.oceanGrid = {}
+		self.parchmentGrid = {}
 		for num in range(1, 11):
 			for let in range (0, 10):
 				self.oceanGrid[(num, chr(65+let))]={"WhatShip":"none", "IsHit":False}
