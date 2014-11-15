@@ -84,11 +84,11 @@ class Battleship():
 		for row in range (0, 10):
 			self.rightBar.grid_rowconfigure(row, weight=1)
 		self.topLeftBar = Frame(self.contentFrame, padx=4)
-		self.topLeftBar.grid (column=1, row=1, columnspan=10, sticky=W+E)
+		self.topLeftBar.grid (column=1, row=1, columnspan=10, sticky=W+E, pady=(5,0))
 		for column in range (0, 9):
 			self.topLeftBar.grid_columnconfigure(column, weight=1)
 		self.topRightBar = Frame(self.contentFrame, padx=4)
-		self.topRightBar.grid (column=12, row=1, columnspan=10, sticky=W+E)
+		self.topRightBar.grid (column=12, row=1, columnspan=10, sticky=W+E, pady=(5,0))
 		for column in range (0, 9):
 			self.topRightBar.grid_columnconfigure(column, weight=1)
 		for i in range(0, 10):
