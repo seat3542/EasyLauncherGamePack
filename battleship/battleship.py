@@ -8,52 +8,27 @@
 #############################################################
 from tkinter import *
 from random import randint
+from random import choice
 
 class Battleship():
+	""" Single player battleship against the computer. """
 	
+	# INITIAL GAME CONSTRUCTION
 	def __init__(self):
+		""" Set up everything for the first time. """
 		self.root = Tk()
 		self.root.title("Battleship")
-		self.message = StringVar()
-		self.images = {}
+		self.__message = StringVar()
+		self.__images = {}
 		self.setupVariables()
 		self.loadImages()
 		self.buildGUI()
 		self.setBoundaries()
 		self.newGame()
 		
-	def setupVariables (self):
-		self.hiddenShips = [0, 1, 2, 3, 4]
-		self.shipsPlaced = 0
-		self.phase = "setup"
-		self.ghostShipType = "longship"
-		self.message.set(" ")
-	
-	def newGame (self):
-		self.ocean.delete("all")
-		self.parchment.delete("all")
-		self.longshipBox.delete("all")
-		self.frigateBox.delete("all")
-		self.schoonerBox.delete("all")
-		self.brigBox.delete("all")
-		self.sloopBox.delete("all")
-		self.setupCanvases()
-		self.setupVariables()
-		self.createMapGhosts()
-		self.buildGrids()
-		self.setupShipHealth()
-		self.placeShipsUpdate()
-		self.generateParchmentGrid()
-	
-	def createMapGhosts (self):
-		self.ghostShip = self.ocean.create_image(3, 3,
-								image=self.images[self.ghostShipType],
-								state=HIDDEN, anchor=NW,)
-		self.ghostX = self.parchment.create_image(3, 3,
-								image=self.images["whiteX"],
-								state=HIDDEN, anchor=NW,)
-	
 	def buildGUI(self):
+		""" Create the tkinter UI. Initially bind map functions. """
+		# Build basic tkinter layout
 		self.contentFrame = Frame(self.root)
 		self.contentFrame.grid(row=0, column=0)
 		self.topBar = Frame(self.contentFrame, border=2, relief=RAISED,
@@ -62,10 +37,10 @@ class Battleship():
 		self.newGameButton = Button(self.topBar, text="New Game",
 									command=self.newGame)
 		self.newGameButton.grid(row=0, column=0)
-		self.messageBox = Label(self.topBar, textvariable=self.message,
-								height=2)
+		self.messageBox = Label(self.topBar, height=2,
+								textvariable=self.__message)
 		self.messageBox.grid(row=1, column=0, sticky=W+E)
-		# Assigning weights
+		# weights for spacing
 		self.root.grid_columnconfigure(0, weight=1)
 		self.root.grid_rowconfigure(0, weight=1)
 		self.contentFrame.grid_columnconfigure(0, weight=1)
@@ -85,11 +60,13 @@ class Battleship():
 		for row in range (0, 10):
 			self.rightBar.grid_rowconfigure(row, weight=1)
 		self.topLeftBar = Frame(self.contentFrame, padx=4)
-		self.topLeftBar.grid (column=1, row=1, columnspan=10, sticky=W+E, pady=(5,0))
+		self.topLeftBar.grid (column=1, row=1, columnspan=10, 
+							  sticky=W+E, pady=(5,0))
 		for column in range (0, 9):
 			self.topLeftBar.grid_columnconfigure(column, weight=1)
 		self.topRightBar = Frame(self.contentFrame, padx=4)
-		self.topRightBar.grid (column=12, row=1, columnspan=10, sticky=W+E, pady=(5,0))
+		self.topRightBar.grid (column=12, row=1, columnspan=10, 
+							   sticky=W+E, pady=(5,0))
 		for column in range (0, 9):
 			self.topRightBar.grid_columnconfigure(column, weight=1)
 		for i in range(0, 10):
@@ -119,7 +96,9 @@ class Battleship():
 		self.ocean.bind("<Motion>", self.mouseOverOcean)
 		self.ocean.bind("<Leave>", self.hideGhostShip)
 		self.ocean.bind("<Button-3>", self.rotateGhostShip)
-		# Ship quickview displays
+		# Ship quickview area
+		self.shipsLabel = Label(self.contentFrame, text="Your\nShips")
+		self.shipsLabel.grid(row=12, column=11)
 		self.shipDisplayBar = Frame(self.contentFrame, pady=2)
 		self.shipDisplayBar.grid (column=1, columnspan=21,
 								  row=13, sticky=E+W)
@@ -128,21 +107,21 @@ class Battleship():
 		self.shipDisplayBar.grid_columnconfigure(2, weight=1)
 		self.shipDisplayBar.grid_columnconfigure(3, weight=1)
 		self.shipDisplayBar.grid_columnconfigure(4, weight=1)
-		self.shipsLabel = Label(self.contentFrame, text="Your\nShips")
-		self.shipsLabel.grid(row=12, column=11)
 		# Ship quickview canvases
 		self.longshipBox = Canvas(self.shipDisplayBar, height=25, 
 								  width=121, relief=SUNKEN, border=2,
 								  bg="#4C8ED4")
 		self.longshipBox.grid(row=0, column=0)
-		self.frigateBox = Canvas(self.shipDisplayBar, height=25, width=97,
-								 relief=SUNKEN, border=2, bg="#4C8ED4")
+		self.frigateBox = Canvas(self.shipDisplayBar, height=25, 
+								 width=97, relief=SUNKEN, border=2, 
+								 bg="#4C8ED4")
 		self.frigateBox.grid(row=0, column=1)
 		self.brigBox = Canvas(self.shipDisplayBar, height=25, width=73,
 							  relief=SUNKEN, border=2, bg="#4C8ED4")
 		self.brigBox.grid(row=0, column=2)
-		self.schoonerBox = Canvas(self.shipDisplayBar, height=25, width=73,
-							  relief=SUNKEN, border=2, bg="#4C8ED4")
+		self.schoonerBox = Canvas(self.shipDisplayBar, height=25, 
+								  width=73, relief=SUNKEN, border=2, 
+								  bg="#4C8ED4")
 		self.schoonerBox.grid(row=0, column=3)
 		self.sloopBox = Canvas(self.shipDisplayBar, height=25, width=49,
 							   relief=SUNKEN, border=2, bg="#4C8ED4")
@@ -158,49 +137,47 @@ class Battleship():
 		self.schoonerLabel.grid(row=1, column=3)
 		self.sloopLabel = Label(self.shipDisplayBar, text="Sloop")
 		self.sloopLabel.grid(row=1, column=4)
-		
-	def setupCanvases (self):
-		self.ocean.create_image(3, 3, image=self.images["ocean"],
-								anchor=NW)
-		self.parchment.create_image(3, 3, anchor=NW,
-									image=self.images["parchment"])
-		self.placeOnCanvas (self.longshipBox, "longship", (1, 'A'))
-		self.placeOnCanvas (self.frigateBox, "frigate", (1, 'A'))
-		self.placeOnCanvas (self.brigBox, "brig", (1, 'A'))
-		self.placeOnCanvas (self.schoonerBox, "schooner", (1, 'A'))
-		self.placeOnCanvas (self.sloopBox, "sloop", (1, 'A'))
-		
+
 	def loadImages (self):
-		self.images["ocean"] = PhotoImage(
+		""" Load pngs and create image dictionary. """
+		self.__images["ocean"] = PhotoImage(
 				file="battleshipOceanRetro.png")
-		self.images["parchment"] = PhotoImage(
+		self.__images["parchment"] = PhotoImage(
 				file="battleshipParchmentRetro.png")
-		self.images["longship"] = PhotoImage(
+		self.__images["longship"] = PhotoImage(
 				file="battleshipLongship.png")
-		self.images["longshipV"] = PhotoImage(
+		self.__images["longshipV"] = PhotoImage(
 				file="battleshipLongshipV.png")
-		self.images["frigate"] = PhotoImage(
+		self.__images["frigate"] = PhotoImage(
 				file="battleshipFrigate.png")
-		self.images["frigateV"] = PhotoImage(
+		self.__images["frigateV"] = PhotoImage(
 				file="battleshipFrigateV.png")
-		self.images["brig"] = PhotoImage(file="battleshipBrig.png")
-		self.images["brigV"] = PhotoImage(file="battleshipBrigV.png")
-		self.images["schooner"] = PhotoImage(
+		self.__images["brig"] = PhotoImage(file="battleshipBrig.png")
+		self.__images["brigV"] = PhotoImage(file="battleshipBrigV.png")
+		self.__images["schooner"] = PhotoImage(
 				file="battleshipSchooner.png")
-		self.images["schoonerV"] = PhotoImage(
+		self.__images["schoonerV"] = PhotoImage(
 				file="battleshipSchoonerV.png")
-		self.images["sloop"] = PhotoImage(file="battleshipSloop.png")
-		self.images["sloopV"] = PhotoImage(file="battleshipSloopV.png")
-		self.images["fire"] = PhotoImage(
+		self.__images["sloop"] = PhotoImage(file="battleshipSloop.png")
+		self.__images["sloopV"] = PhotoImage(
+				file="battleshipSloopV.png")
+		self.__images["fire"] = PhotoImage(
 				file="battleshipFireTransparent.png")
-		self.images["splash"] = PhotoImage(
+		self.__images["splash"] = PhotoImage(
 				file="battleshipSplashTransparent.png")
-		self.images["redX"] = PhotoImage(
+		self.__images["redX"] = PhotoImage(
 				file="battleshipRedXTransparent.png")
-		self.images["whiteX"] = PhotoImage(
+		self.__images["whiteX"] = PhotoImage(
 				file="battleshipWhiteXTransparent.png")
-		
+				
 	def setBoundaries (self):
+		""" Create dictionary for keeping ships completely on the board.
+		
+		Create a dictionary where the key is a ship type and orientation
+		and the contents are a NumLet for the farthest downward and
+		rightward a ship's bow (where its coordinates are recorded from)
+		can go without the rest of it going off the game map.
+		"""
 		self.boundaries = {}
 		self.boundaries["longshipV"] = (10, 'F')
 		self.boundaries["longship"] = (6, 'J')
@@ -211,9 +188,28 @@ class Battleship():
 		self.boundaries["schoonerV"] = (10, 'H')
 		self.boundaries["schooner"] = (8, 'J')
 		self.boundaries["sloopV"] = (10, 'I')
-		self.boundaries["sloop"] = (9, 'J')		
-	
+		self.boundaries["sloop"] = (9, 'J')	
+		
+	# GAME CONSTRUCTION/RESETTING
+	def setupVariables (self):
+		""" Set up variables that are reset before every game. """
+		self.__hiddenShips = [0, 1, 2, 3, 4]
+		self.__shipsPlaced = 0
+		self.__phase = "setup"
+		self.__ghostShipType = "longship"
+		self.__message.set(" ")
+
+	def createMapGhosts (self):
+		""" Create the icons that follow the mouse over maps. """
+		self.__ghostShip = self.ocean.create_image(
+			3, 3, image=self.__images[self.__ghostShipType], anchor=NW,
+			state=HIDDEN)
+		self.__ghostX = self.parchment.create_image(
+			3, 3, image=self.__images["whiteX"], state=HIDDEN, 
+			anchor=NW)
+
 	def setupShipHealth (self):
+		""" Set/reset all player & CPU ship healths to full health. """
 		self.playerShips = {}
 		self.CPUShips = {}
 		self.playerShips["longship"] = 5
@@ -227,165 +223,67 @@ class Battleship():
 		self.CPUShips["brig"] = 3
 		self.CPUShips["sloop"] = 2
 	
-	def placeOnCanvas (self, whichCanvas, item, location):
-		return whichCanvas.create_image(self.convertToCoord (location),
-								 anchor=NW, image=self.images[item])
+	def newGame (self):
+		""" Reset everything (displays and variables) for a new game."""
+		self.ocean.delete("all")
+		self.parchment.delete("all")
+		self.longshipBox.delete("all")
+		self.frigateBox.delete("all")
+		self.schoonerBox.delete("all")
+		self.brigBox.delete("all")
+		self.sloopBox.delete("all")
+		self.setupCanvases()
+		self.setupVariables()
+		self.createMapGhosts()
+		self.buildGrids()
+		self.setupShipHealth()
+		self.placeShipsUpdate()
+		self.generateParchmentGrid()
 		
-	def hideGhostShip (self, mouseleave):
-		self.ocean.itemconfig(self.ghostShip, state=HIDDEN)
-	
-	def hideGhostX (self, mouseleave):
-		self.parchment.itemconfig(self.ghostX, state=HIDDEN)
-	
-	def rotateGhostShip (self, mouseclick):
-		if self.ghostShipType == "longship":
-			self.ghostShipType = "longshipV"
-		elif self.ghostShipType == "frigate":
-			self.ghostShipType = "frigateV"
-		elif self.ghostShipType == "brig":
-			self.ghostShipType = "brigV"
-		elif self.ghostShipType == "schooner":
-			self.ghostShipType = "schoonerV"
-		elif self.ghostShipType == "sloop":
-			self.ghostShipType = "sloopV"
-		elif self.ghostShipType == "longshipV":
-			self.ghostShipType = "longship"
-		elif self.ghostShipType == "frigateV":
-			self.ghostShipType = "frigate"
-		elif self.ghostShipType == "brigV":
-			self.ghostShipType = "brig"
-		elif self.ghostShipType == "schoonerV":
-			self.ghostShipType = "schooner"
-		elif self.ghostShipType == "sloopV":
-			self.ghostShipType = "sloop"
-		self.ocean.itemconfig(self.ghostShip, 
-							  image=self.images[self.ghostShipType])
-	
-	def mouseOverOcean (self, mouse):
-		if self.ghostShipType != "none":
-			locationNumLet = self.convertMouseToNumLet(mouse)
-			locationCoord = self.convertToCoord(locationNumLet)
-			if (locationNumLet[0] <= 
-							self.boundaries[self.ghostShipType][0] and
-							locationNumLet[1] <= 
-							self.boundaries[self.ghostShipType][1]):
-				self.ocean.coords(self.ghostShip, locationCoord)
-				self.ocean.itemconfig(self.ghostShip, state=NORMAL)
-			elif (locationNumLet[0] <= 
-					self.boundaries[self.ghostShipType][0]):
-				self.ocean.coords(
-						self.ghostShip, (locationCoord[0], 3 + 24 *
-						(ord(self.boundaries[self.ghostShipType][1])-65)))
-				self.ocean.itemconfig(self.ghostShip, state=NORMAL)
-			elif (locationNumLet[1] <= 
-					self.boundaries[self.ghostShipType][1]):
-				self.ocean.coords(self.ghostShip, (3 + 24*
-								 (self.boundaries[self.ghostShipType][0]-1),
-								  locationCoord[1]))
-				self.ocean.itemconfig(self.ghostShip, state=NORMAL)
-	
-	def mouseOverParchment (self, mouse):
-		if self.phase == "attack":
-			locationNumLet = self.convertMouseToNumLet(mouse)
-			locationCoord = self.convertToCoord(locationNumLet)
-			self.parchment.coords(self.ghostX, locationCoord)
-			self.parchment.itemconfig(self.ghostX, state=NORMAL)
-	
-	def parchmentLClick (self, mouseclick):
-		if self.phase == "attack":
-			if self.parchmentGrid[self.convertMouseToNumLet(mouseclick)]["IsHit"] is False:
-				yourMove = self.processAttack(self.convertMouseToNumLet(mouseclick), self.parchment)
-				CPUnumLet = (randint(1, 10), chr(65 + randint(0, 9)))
-				while self.oceanGrid[CPUnumLet]["IsHit"] is True:
-					CPUnumLet = (randint(1, 10), chr(65 + randint(0, 9)))
-				CPUMove = self.processAttack(CPUnumLet, self.ocean)
-				message = "You attacked " + str(yourMove[0]) + yourMove[1] + "\nYour opponent attacked " + str(CPUMove[0]) + CPUMove[1]
-				self.message.set(message)
-				self.checkVictory()
-				
-	def convertMouseToNumLet (self, mouse):
-		number = int((mouse.x - 4) / 24) + 1
-		letter = chr(65+int((mouse.y - 4) / 24))
-		return (number, letter)
-	
-	def convertCoordToNumLet (self, coordinates):
-		number = int((coordinates[0] - 4) / 24) + 1
-		letter = chr(65+int((coordinates[1] - 4) / 24))
-		return (number, letter)
-	
-	def convertToCoord (self, NumLet):
-		return (3 + (NumLet[0]-1)*24, 3 + (ord(NumLet[1])-65)*24)
-		
+	# MAP CREATION	
 	def buildGrids (self):
 		self.oceanGrid = {}
 		self.parchmentGrid = {}
 		for num in range(1, 11):
 			for let in range (0, 10):
-				self.oceanGrid[(num, chr(65+let))]={"WhatShip":"none", "IsHit":False}
-				self.parchmentGrid[(num, chr(65+let))]={"WhatShip":"none", "IsHit":False}
+				self.oceanGrid[(num, chr(65+let))]= \
+					{"WhatShip":"none", "IsHit":False}
+				self.parchmentGrid[(num, chr(65+let))]= \
+					{"WhatShip":"none", "IsHit":False}
 		
-	def run(self):
-		""" Run Battleship"""
-		self.root.mainloop()
+	def setupCanvases (self):
+		self.ocean.create_image(3, 3, image=self.__images["ocean"],
+								anchor=NW)
+		self.parchment.create_image(3, 3, anchor=NW,
+									image=self.__images["parchment"])
+		self.placeOnCanvas (self.longshipBox, "longship", (1, 'A'))
+		self.placeOnCanvas (self.frigateBox, "frigate", (1, 'A'))
+		self.placeOnCanvas (self.brigBox, "brig", (1, 'A'))
+		self.placeOnCanvas (self.schoonerBox, "schooner", (1, 'A'))
+		self.placeOnCanvas (self.sloopBox, "sloop", (1, 'A'))
 	
-	# GAMEPLAY
-	# Setup phase
-	def oceanLClick (self, leftclick):
-		locationNumLet = self.convertMouseToNumLet(leftclick)
-		if self.ghostShipType != "none":
-			if (locationNumLet[0] <= 
-							self.boundaries[self.ghostShipType][0] and
-							locationNumLet[1] <= 
-							self.boundaries[self.ghostShipType][1]):
-				self.placeAShipOcean (locationNumLet)
-			elif (locationNumLet[0] <= 
-					self.boundaries[self.ghostShipType][0]):
-				self.placeAShipOcean ((locationNumLet[0], self.boundaries[self.ghostShipType][1]))
-			elif (locationNumLet[1] <= 
-					self.boundaries[self.ghostShipType][1]):
-				self.placeAShipOcean ((self.boundaries[self.ghostShipType][0], locationNumLet[1]))
+	def generateParchmentGrid (self):
+		self.generateParchmentShip(choice(["longship", "longshipV"]))
+		self.generateParchmentShip(choice(["frigate", "frigateV"]))
+		self.generateParchmentShip(choice(["schooner", "schoonerV"]))
+		self.generateParchmentShip(choice(["brig", "brigV"]))
+		self.generateParchmentShip(choice(["sloop", "sloopV"]))
 	
-	def placeShipsUpdate (self):
-		if self.shipsPlaced == 0:
-			self.message.set(
-					"LEFT CLICK on the ocean to place your LONGSHIP.\n RIGHT CLICK to rotate it before placing it.")
-			self.ghostShipType = "longship"
-		if self.shipsPlaced == 1:
-			self.message.set(
-					"LEFT CLICK on the ocean to place your FRIGATE.\n RIGHT CLICK to rotate it before placing it.")
-			self.ghostShipType = "frigate"
-		if self.shipsPlaced == 2:
-			self.message.set(
-					"LEFT CLICK on the ocean to place your SCHOONER.\n RIGHT CLICK to rotate it before placing it.")
-			self.ghostShipType = "schooner"
-		if self.shipsPlaced == 3:
-			self.message.set(
-					"LEFT CLICK on the ocean to place your BRIG.\n RIGHT CLICK to rotate it before placing it.")
-			self.ghostShipType = "brig"
-		if self.shipsPlaced == 4:
-			self.message.set(
-					"LEFT CLICK on the ocean to place your SLOOP.\n RIGHT CLICK to rotate it before placing it.")
-			self.ghostShipType = "sloop"
-		if self.shipsPlaced == 5:
-			self.message.set("Now left click the parchment map to attack the enemy.")
-			self.ghostShipType = "none"
-			self.phase = "attack"
-			self.ocean.itemconfig(self.ghostShip, state=HIDDEN)
-		else:
-			self.ocean.itemconfig(self.ghostShip, 
-								  image=self.images[self.ghostShipType])
-	
-	def placeAShipOcean (self, numLet):
-		if (all(self.oceanGrid[space]["WhatShip"] == "none" 
-				for space in self.spacesOccupiedBy(self.ghostShipType, 
-				numLet))):
-			self.placeOnCanvas(self.ocean, self.ghostShipType, numLet)
-			for space in self.spacesOccupiedBy(self.ghostShipType, 
-											   numLet):
-				self.oceanGrid[space]["WhatShip"] = self.ghostShipType
-			self.shipsPlaced += 1
-			self.placeShipsUpdate()
-	
+	def generateParchmentShip (self, activeShip):
+		numlet = self.convertCoordToNumLet((randint(4, 
+			self.convertNumLetToCoord(self.boundaries[activeShip])[0]), 
+			randint(4, self.convertNumLetToCoord(
+			self.boundaries[activeShip])[1])))
+		while not (all(self.parchmentGrid[space]["WhatShip"] == "none" 
+				for space in self.spacesOccupiedBy(activeShip, 
+												   numlet))):
+			numlet = self.convertCoordToNumLet((randint(4, 
+				self.convertNumLetToCoord(
+				self.boundaries[activeShip])[0]), 
+				randint(4, self.convertNumLetToCoord(
+				self.boundaries[activeShip])[1])))
+		self.placeAShipParchment(numlet, activeShip)
+
 	def placeAShipParchment (self, numLet, shipType):
 		if shipType == "longshipV" or shipType == "longship":
 			slot = 0
@@ -397,13 +295,194 @@ class Battleship():
 			slot = 3
 		else:
 			slot = 4
-		self.hiddenShips[slot] = self.placeOnCanvas(self.parchment, shipType, numLet)
-		self.parchment.itemconfig(self.hiddenShips[slot], state=HIDDEN)
+		self.__hiddenShips[slot] = self.placeOnCanvas(self.parchment, 
+													  shipType, numLet)
+		self.parchment.itemconfig(self.__hiddenShips[slot], 
+								  state=HIDDEN)
 		for space in self.spacesOccupiedBy(shipType, numLet):
 			self.parchmentGrid[space]["WhatShip"] = shipType
+			
+	# MAP FUNCTIONALITY		
+	def placeOnCanvas (self, whichCanvas, item, location):
+		return whichCanvas.create_image(self.convertNumLetToCoord (
+										location), 
+										image=self.__images[item],
+										anchor=NW)
+		
+	def hideGhostShip (self, mouseleave):
+		self.ocean.itemconfig(self.__ghostShip, state=HIDDEN)
+	
+	def hideGhostX (self, mouseleave):
+		self.parchment.itemconfig(self.__ghostX, state=HIDDEN)
+	
+	def mouseOverOcean (self, mouse):
+		if self.__ghostShipType != "none":
+			locationNumLet = self.convertMouseToNumLet(mouse)
+			locationCoord = self.convertNumLetToCoord(locationNumLet)
+			if (locationNumLet[0] <= 
+					self.boundaries[self.__ghostShipType][0] and
+					locationNumLet[1] <= 
+					self.boundaries[self.__ghostShipType][1]):
+				self.ocean.coords(self.__ghostShip, locationCoord)
+				self.ocean.itemconfig(self.__ghostShip, state=NORMAL)
+			elif (locationNumLet[0] <= 
+					self.boundaries[self.__ghostShipType][0]):
+				self.ocean.coords(
+					self.__ghostShip, (locationCoord[0], 3 + 24 *
+					(ord(self.boundaries[self.__ghostShipType][1])-65)))
+				self.ocean.itemconfig(self.__ghostShip, state=NORMAL)
+			elif (locationNumLet[1] <= 
+					self.boundaries[self.__ghostShipType][1]):
+				self.ocean.coords(
+					self.__ghostShip, (3 + 24 *
+					(self.boundaries[self.__ghostShipType][0] - 1),
+					locationCoord[1]))
+				self.ocean.itemconfig(self.__ghostShip, state=NORMAL)
+	
+	def mouseOverParchment (self, mouse):
+		if self.__phase == "attack":
+			locationNumLet = self.convertMouseToNumLet(mouse)
+			locationCoord = self.convertNumLetToCoord(locationNumLet)
+			self.parchment.coords(self.__ghostX, locationCoord)
+			self.parchment.itemconfig(self.__ghostX, state=NORMAL)
+	
+	def placeShipsUpdate (self):
+		if self.__shipsPlaced == 0:
+			self.__message.set(
+					"LEFT CLICK on the ocean to place your LONGSHIP.\n" 
+					"RIGHT CLICK to rotate it before placing it.")
+			self.__ghostShipType = "longship"
+		if self.__shipsPlaced == 1:
+			self.__message.set(
+					"LEFT CLICK on the ocean to place your FRIGATE.\n" 
+					"RIGHT CLICK to rotate it before placing it.")
+			self.__ghostShipType = "frigate"
+		if self.__shipsPlaced == 2:
+			self.__message.set(
+					"LEFT CLICK on the ocean to place your SCHOONER.\n"
+					"RIGHT CLICK to rotate it before placing it.")
+			self.__ghostShipType = "schooner"
+		if self.__shipsPlaced == 3:
+			self.__message.set(
+					"LEFT CLICK on the ocean to place your BRIG.\n" 
+					"RIGHT CLICK to rotate it before placing it.")
+			self.__ghostShipType = "brig"
+		if self.__shipsPlaced == 4:
+			self.__message.set(
+					"LEFT CLICK on the ocean to place your SLOOP.\n "
+					"RIGHT CLICK to rotate it before placing it.")
+			self.__ghostShipType = "sloop"
+		if self.__shipsPlaced == 5:
+			self.__message.set("Now left click the parchment map to "
+							   "attack the enemy.")
+			self.__ghostShipType = "none"
+			self.__phase = "attack"
+			self.ocean.itemconfig(self.__ghostShip, state=HIDDEN)
+		else:
+			self.ocean.itemconfig(
+				self.__ghostShip, 
+				image=self.__images[self.__ghostShipType])
+	
+	# MAP INTERACTION
+	def rotateGhostShip (self, mouseclick):
+		if self.__ghostShipType == "longship":
+			self.__ghostShipType = "longshipV"
+		elif self.__ghostShipType == "frigate":
+			self.__ghostShipType = "frigateV"
+		elif self.__ghostShipType == "brig":
+			self.__ghostShipType = "brigV"
+		elif self.__ghostShipType == "schooner":
+			self.__ghostShipType = "schoonerV"
+		elif self.__ghostShipType == "sloop":
+			self.__ghostShipType = "sloopV"
+		elif self.__ghostShipType == "longshipV":
+			self.__ghostShipType = "longship"
+		elif self.__ghostShipType == "frigateV":
+			self.__ghostShipType = "frigate"
+		elif self.__ghostShipType == "brigV":
+			self.__ghostShipType = "brig"
+		elif self.__ghostShipType == "schoonerV":
+			self.__ghostShipType = "schooner"
+		elif self.__ghostShipType == "sloopV":
+			self.__ghostShipType = "sloop"
+		self.ocean.itemconfig(self.__ghostShip, 
+							  image=self.__images[self.__ghostShipType])
+							  
+	def oceanLClick (self, leftclick):
+		locationNumLet = self.convertMouseToNumLet(leftclick)
+		if self.__ghostShipType != "none":
+			if (locationNumLet[0] <= 
+							self.boundaries[self.__ghostShipType][0] and
+							locationNumLet[1] <= 
+							self.boundaries[self.__ghostShipType][1]):
+				self.placeAShipOcean (locationNumLet)
+			elif (locationNumLet[0] <= 
+					self.boundaries[self.__ghostShipType][0]):
+				self.placeAShipOcean (
+					(locationNumLet[0], 
+					self.boundaries[self.__ghostShipType][1]))
+			elif (locationNumLet[1] <= 
+					self.boundaries[self.__ghostShipType][1]):
+				self.placeAShipOcean (
+					(self.boundaries[self.__ghostShipType][0], 
+					locationNumLet[1]))
+	
+	def parchmentLClick (self, mouseclick):
+		if self.__phase == "attack":
+			if self.parchmentGrid[self.convertMouseToNumLet(
+					mouseclick)]["IsHit"] is False:
+				yourMove = self.processAttack(
+					self.convertMouseToNumLet(mouseclick), 
+					self.parchment)
+				CPUnumLet = (randint(1, 10), chr(65 + randint(0, 9)))
+				while self.oceanGrid[CPUnumLet]["IsHit"]:
+					CPUnumLet = (randint(1, 10), chr(65 + 
+						randint(0, 9)))
+				CPUMove = self.processAttack(CPUnumLet, self.ocean)
+				message = ("You attacked " + str(yourMove[0]) + 
+					yourMove[1] + "\nYour opponent attacked " + 
+					str(CPUMove[0]) + CPUMove[1])
+				self.__message.set(message)
+				self.checkVictory()
+	
+	def placeAShipOcean (self, numLet):
+		if (all(self.oceanGrid[space]["WhatShip"] == "none" 
+				for space in self.spacesOccupiedBy(self.__ghostShipType, 
+												   numLet))):
+			self.placeOnCanvas(self.ocean, self.__ghostShipType, numLet)
+			for space in self.spacesOccupiedBy(self.__ghostShipType, 
+											   numLet):
+				self.oceanGrid[space]["WhatShip"] = self.__ghostShipType
+			self.__shipsPlaced += 1
+			self.placeShipsUpdate()
+				
+	# GENERAL FUNCTIONALITY			
+	def convertMouseToNumLet (self, mouse):
+		number = int((mouse.x - 4) / 24) + 1
+		letter = chr(65+int((mouse.y - 4) / 24))
+		# If something out of bounds is produced, bring it back in.
+		if number > 10:
+			number = 10
+		if letter == 'K':
+			letter = 'J'
+		return (number, letter)
+	
+	def convertCoordToNumLet (self, coordinates):
+		number = int((coordinates[0] - 4) / 24) + 1
+		letter = chr(65+int((coordinates[1] - 4) / 24))
+		# If something out of bounds is produced, bring it back in.
+		if number > 10:
+			number = 10
+		if letter == 'K':
+			letter = 'J'
+		return (number, letter)
+	
+	def convertNumLetToCoord (self, NumLet):
+		return (3 + (NumLet[0]-1)*24, 3 + (ord(NumLet[1])-65)*24)
 	
 	def spacesOccupiedBy (self, whatship, bowLocation):
 		occupied = []
+		# Horizontal ships
 		if (whatship == "longship" or whatship == "frigate" or 
 				whatship == "schooner" or whatship == "brig" or
 				whatship == "sloop"):
@@ -416,70 +495,25 @@ class Battleship():
 			occupied.append((bowLocation[0]+3, bowLocation[1]))
 		if whatship == "longship":
 			occupied.append((bowLocation[0]+4, bowLocation[1]))
+		# Vertical ships
 		if (whatship == "longshipV" or whatship == "frigateV" or 
 				whatship == "schoonerV" or whatship == "brigV" or
 				whatship == "sloopV"):
 			occupied.append(bowLocation)
-			occupied.append((bowLocation[0], chr(ord(bowLocation[1])+1)))
+			occupied.append((bowLocation[0], 
+							 chr(ord(bowLocation[1])+1)))
 		if (whatship == "longshipV" or whatship == "frigateV" or 
 				whatship == "schoonerV" or whatship == "brigV"):	
-			occupied.append((bowLocation[0], chr(ord(bowLocation[1])+2)))
+			occupied.append((bowLocation[0], 
+							 chr(ord(bowLocation[1])+2)))
 		if whatship == "longshipV" or whatship == "frigateV":	
-			occupied.append((bowLocation[0], chr(ord(bowLocation[1])+3)))
+			occupied.append((bowLocation[0], 
+							 chr(ord(bowLocation[1])+3)))
 		if whatship == "longshipV":
-			occupied.append((bowLocation[0], chr(ord(bowLocation[1])+4)))
+			occupied.append((bowLocation[0], 
+							 chr(ord(bowLocation[1])+4)))
 		return occupied
 		
-	def generateParchmentGrid (self):
-		activeShip = "longship"
-		# Generate Longship
-		if randint(0, 1) == 1:
-			activeShip = "longshipV"
-		numlet = self.convertCoordToNumLet((randint(4, self.convertToCoord(self.boundaries[activeShip])[0]), randint(4, self.convertToCoord(self.boundaries[activeShip])[1])))
-		self.placeAShipParchment(numlet, activeShip)
-		# generate frigate
-		if randint(0, 1) == 1:
-			activeShip = "frigateV"
-		else:
-			activeShip = "frigate"
-		numlet = self.convertCoordToNumLet((randint(4, self.convertToCoord(self.boundaries[activeShip])[0]), randint(4, self.convertToCoord(self.boundaries[activeShip])[1])))
-		while not (all(self.parchmentGrid[space]["WhatShip"] == "none" 
-				for space in self.spacesOccupiedBy(activeShip, numlet))):
-			numlet = self.convertCoordToNumLet((randint(4, self.convertToCoord(self.boundaries[activeShip])[0]), randint(4, self.convertToCoord(self.boundaries[activeShip])[1])))
-		self.placeAShipParchment(numlet, activeShip)
-		# generate Schooner
-		if randint(0, 1) == 1:
-			activeShip = "schoonerV"
-		else:
-			activeShip = "schooner"
-		numlet = self.convertCoordToNumLet((randint(4, self.convertToCoord(self.boundaries[activeShip])[0]), randint(4, self.convertToCoord(self.boundaries[activeShip])[1])))
-		while not (all(self.parchmentGrid[space]["WhatShip"] == "none" 
-				for space in self.spacesOccupiedBy(activeShip, numlet))):
-			numlet = self.convertCoordToNumLet((randint(4, self.convertToCoord(self.boundaries[activeShip])[0]), randint(4, self.convertToCoord(self.boundaries[activeShip])[1])))
-		self.placeAShipParchment(numlet, activeShip)
-		# generate brig
-		if randint(0, 1) == 1:
-			activeShip = "brigV"
-		else:
-			activeShip = "brig"
-		numlet = self.convertCoordToNumLet((randint(4, self.convertToCoord(self.boundaries[activeShip])[0]), randint(4, self.convertToCoord(self.boundaries[activeShip])[1])))
-		while not (all(self.parchmentGrid[space]["WhatShip"] == "none" 
-				for space in self.spacesOccupiedBy(activeShip, numlet))):
-			numlet = self.convertCoordToNumLet((randint(4, self.convertToCoord(self.boundaries[activeShip])[0]), randint(4, self.convertToCoord(self.boundaries[activeShip])[1])))
-		self.placeAShipParchment(numlet, activeShip)
-		# generate sloop
-		if randint(0, 1) == 1:
-			activeShip = "sloopV"
-		else:
-			activeShip = "sloop"
-		numlet = self.convertCoordToNumLet((randint(4, self.convertToCoord(self.boundaries[activeShip])[0]), randint(4, self.convertToCoord(self.boundaries[activeShip])[1])))
-		while not (all(self.parchmentGrid[space]["WhatShip"] == "none" 
-				for space in self.spacesOccupiedBy(activeShip, numlet))):
-			numlet = self.convertCoordToNumLet((randint(4, self.convertToCoord(self.boundaries[activeShip])[0]), randint(4, self.convertToCoord(self.boundaries[activeShip])[1])))
-		self.placeAShipParchment(numlet, activeShip)
-	
-	# Attack phase
-	
 	def processAttack (self, numLet, whichMap):
 		whichGrid = self.oceanGrid
 		if self.parchment == whichMap:
@@ -518,7 +552,8 @@ class Battleship():
 				else:
 					didHit = " and hit your " + shipHit + "!"
 					image = "fire"
-					self.placeOnCanvas(box, image, (self.playerShips[shipHit], 'A'))
+					self.placeOnCanvas(box, image, 
+									   (self.playerShips[shipHit], 'A'))
 					self.playerShips[shipHit] += -1
 					if self.playerShips[shipHit] == 0:
 						didHit = " and sunk your " + shipHit + "!"
@@ -531,16 +566,19 @@ class Battleship():
 				self.CPUShips["schooner"] == 0 and
 				self.CPUShips["brig"] == 0 and 
 				self.CPUShips["sloop"] == 0):
-			self.phase = "over"
-			self.message.set("You've sunken the enemy fleet!\nVictory is yours!")
+			self.__phase = "over"
+			self.__message.set("You've sunken the enemy fleet!\n"
+							   "Victory is yours!")
 		if (self.playerShips["longship"] == 0 and 
 				self.playerShips["frigate"] == 0 and 
 				self.playerShips["schooner"] == 0 and
 				self.playerShips["brig"] == 0 and 
 				self.playerShips["sloop"] == 0):
-			self.phase = "over"
-			self.message.set("Your entire fleet rests in Davy Jones' locker!\nThe enemy has won!")
-		if self.phase == "over":
+			self.__phase = "over"
+			self.__message.set("Your entire fleet rests in Davy Jones'"
+							   "locker!\nThe enemy has won!")
+		if self.__phase == "over":
+			# Lock everything down.
 			self.parchment.bind("<Button-1>", 0)
 			self.parchment.bind("<Motion>", 0)
 			self.parchment.bind("<Leave>", 0)
@@ -549,9 +587,14 @@ class Battleship():
 			self.ocean.bind("<Leave>", 0)
 			self.ocean.bind("<Button-3>", 0)
 			for i in range (0, 5):
-				self.parchment.itemconfig(self.hiddenShips[i], 
+				# Reveal the enemy ships
+				self.parchment.itemconfig(self.__hiddenShips[i], 
 										  state=NORMAL)
 		
+	def run(self):
+		""" Run Battleship"""
+		self.root.mainloop()
+	
 
 if __name__ == '__main__':
 	app = Battleship()
