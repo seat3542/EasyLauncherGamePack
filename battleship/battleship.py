@@ -70,6 +70,7 @@ class Battleship():
 		self.root.grid_rowconfigure(0, weight=1)
 		self.contentFrame.grid_columnconfigure(0, weight=1)
 		self.contentFrame.grid_rowconfigure(0, weight=1)
+		self.contentFrame.grid_rowconfigure(13, pad=3)
 		self.topBar.grid_columnconfigure(0, weight=1)
 		self.topBar.grid_rowconfigure(0, weight=1)
 		# Map grid labels
@@ -119,35 +120,44 @@ class Battleship():
 		self.ocean.bind("<Leave>", self.hideGhostShip)
 		self.ocean.bind("<Button-3>", self.rotateGhostShip)
 		# Ship quickview displays
+		self.shipDisplayBar = Frame(self.contentFrame, pady=2)
+		self.shipDisplayBar.grid (column=1, columnspan=21,
+								  row=13, sticky=E+W)
+		self.shipDisplayBar.grid_columnconfigure(0, weight=1)
+		self.shipDisplayBar.grid_columnconfigure(1, weight=1)
+		self.shipDisplayBar.grid_columnconfigure(2, weight=1)
+		self.shipDisplayBar.grid_columnconfigure(3, weight=1)
+		self.shipDisplayBar.grid_columnconfigure(4, weight=1)
 		self.shipsLabel = Label(self.contentFrame, text="Your\nShips")
 		self.shipsLabel.grid(row=12, column=11)
-		self.longshipBox = Canvas(self.contentFrame, height=25, 
+		# Ship quickview canvases
+		self.longshipBox = Canvas(self.shipDisplayBar, height=25, 
 								  width=121, relief=SUNKEN, border=2,
 								  bg="#4C8ED4")
-		self.longshipBox.grid(column=1, row=13, columnspan=5)
-		self.frigateBox = Canvas(self.contentFrame, height=25, width=97,
+		self.longshipBox.grid(row=0, column=0)
+		self.frigateBox = Canvas(self.shipDisplayBar, height=25, width=97,
 								 relief=SUNKEN, border=2, bg="#4C8ED4")
-		self.frigateBox.grid(row=13, column=7, columnspan=4)
-		self.brigBox = Canvas(self.contentFrame, height=25, width=73,
+		self.frigateBox.grid(row=0, column=1)
+		self.brigBox = Canvas(self.shipDisplayBar, height=25, width=73,
 							  relief=SUNKEN, border=2, bg="#4C8ED4")
-		self.brigBox.grid(row=13, column=12, columnspan=3)
-		self.schoonerBox = Canvas(self.contentFrame, height=25, width=73,
+		self.brigBox.grid(row=0, column=2)
+		self.schoonerBox = Canvas(self.shipDisplayBar, height=25, width=73,
 							  relief=SUNKEN, border=2, bg="#4C8ED4")
-		self.schoonerBox.grid(row=13, column=16, columnspan=3)
-		self.sloopBox = Canvas(self.contentFrame, height=25, width=49,
+		self.schoonerBox.grid(row=0, column=3)
+		self.sloopBox = Canvas(self.shipDisplayBar, height=25, width=49,
 							   relief=SUNKEN, border=2, bg="#4C8ED4")
-		self.sloopBox.grid(row=13, column=20, columnspan=2)
+		self.sloopBox.grid(row=0, column=4)
 		# Ship quickview labels
-		self.longshipLabel = Label(self.contentFrame, text="Longship")
-		self.longshipLabel.grid(column=1, row=14, columnspan=5)
-		self.frigateLabel = Label(self.contentFrame, text="Frigate")
-		self.frigateLabel.grid(row=14, column=7, columnspan=4)
-		self.brigLabel = Label(self.contentFrame, text="Brig")
-		self.brigLabel.grid(row=14, column=12, columnspan=3)
-		self.schoonerLabel = Label(self.contentFrame, text="Schooner")
-		self.schoonerLabel.grid(row=14, column=16, columnspan=3)
-		self.sloopLabel = Label(self.contentFrame, text="Sloop")
-		self.sloopLabel.grid(row=14, column=20, columnspan=2)
+		self.longshipLabel = Label(self.shipDisplayBar, text="Longship")
+		self.longshipLabel.grid(row=1, column=0)
+		self.frigateLabel = Label(self.shipDisplayBar, text="Frigate")
+		self.frigateLabel.grid(row=1, column=1)
+		self.brigLabel = Label(self.shipDisplayBar, text="Brig")
+		self.brigLabel.grid(row=1, column=2)
+		self.schoonerLabel = Label(self.shipDisplayBar, text="Schooner")
+		self.schoonerLabel.grid(row=1, column=3)
+		self.sloopLabel = Label(self.shipDisplayBar, text="Sloop")
+		self.sloopLabel.grid(row=1, column=4)
 		
 	def setupCanvases (self):
 		self.ocean.create_image(3, 3, image=self.images["ocean"],
@@ -357,7 +367,7 @@ class Battleship():
 					"LEFT CLICK on the ocean to place your SLOOP.\n RIGHT CLICK to rotate it before placing it.")
 			self.ghostShipType = "sloop"
 		if self.shipsPlaced == 5:
-			self.message.set("Good. You placed all your ships.")
+			self.message.set("Now left click the parchment map to attack the enemy.")
 			self.ghostShipType = "none"
 			self.phase = "attack"
 			self.ocean.itemconfig(self.ghostShip, state=HIDDEN)
