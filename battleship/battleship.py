@@ -238,10 +238,20 @@ class Battleship():
 		self.buildGrids()
 		self.setupShipHealth()
 		self.placeShipsUpdate()
-		self.generateParchmentGrid()
+		self.generateParchmentShips()
 		
 	# MAP CREATION	
 	def buildGrids (self):
+		""" Reset the dictionaries representing the game boards.
+		
+		Reset the dictionaries representing the game boards. The keys
+		are NumLets, and the contents are the corresponding square on
+		the board represented as a miniature dictionary with two keys:
+		WhatShip and IsHit. Respectively these represent whether a ship
+		is occupying that square and whether that square has been hit
+		with an attack yet. Resetting the board dictionaries makes all
+		the squares have no ship and have not been attacked.
+		"""
 		self.oceanGrid = {}
 		self.parchmentGrid = {}
 		for num in range(1, 11):
@@ -252,6 +262,11 @@ class Battleship():
 					{"WhatShip":"none", "IsHit":False}
 		
 	def setupCanvases (self):
+		""" Place constant images on their canvases
+		
+		Place the appropriate background image on each map canvas, and
+		place the appropriate ship in the ship health viewer canvases.
+		"""
 		self.ocean.create_image(3, 3, image=self.__images["ocean"],
 								anchor=NW)
 		self.parchment.create_image(3, 3, anchor=NW,
@@ -262,29 +277,49 @@ class Battleship():
 		self.placeOnCanvas (self.schoonerBox, "schooner", (1, 'A'))
 		self.placeOnCanvas (self.sloopBox, "sloop", (1, 'A'))
 	
-	def generateParchmentGrid (self):
-		self.generateParchmentShip(choice(["longship", "longshipV"]))
-		self.generateParchmentShip(choice(["frigate", "frigateV"]))
-		self.generateParchmentShip(choice(["schooner", "schoonerV"]))
-		self.generateParchmentShip(choice(["brig", "brigV"]))
-		self.generateParchmentShip(choice(["sloop", "sloopV"]))
-	
-	def generateParchmentShip (self, activeShip):
-		numlet = self.convertCoordToNumLet((randint(4, 
-			self.convertNumLetToCoord(self.boundaries[activeShip])[0]), 
-			randint(4, self.convertNumLetToCoord(
-			self.boundaries[activeShip])[1])))
-		while not (all(self.parchmentGrid[space]["WhatShip"] == "none" 
-				for space in self.spacesOccupiedBy(activeShip, 
-												   numlet))):
+	def generateParchmentShips (self):
+		""" Randomly orient and place ships on the parchment.
+		
+		Randomly choose orientation for each of the five ships, then
+		randomly generate a location for each within the area this ship
+		and orientation can be in according to the boundaries. If this 
+		location overlaps an already existing ship, regenerate until a 
+		valid location is found.
+		"""
+		shipChoice = [choice(["longship", "longshipV"]),
+					  choice(["frigate", "frigateV"]),
+					  choice(["schooner", "schoonerV"]),
+					  choice(["brig", "brigV"]),
+					  choice(["sloop", "sloopV"])]
+		for i in range (0, 5):
+			activeShip = shipChoice[i]
 			numlet = self.convertCoordToNumLet((randint(4, 
 				self.convertNumLetToCoord(
-				self.boundaries[activeShip])[0]), 
+					self.boundaries[activeShip])[0]), 
 				randint(4, self.convertNumLetToCoord(
 				self.boundaries[activeShip])[1])))
-		self.placeAShipParchment(numlet, activeShip)
+			while not (
+					all(self.parchmentGrid[space]["WhatShip"] == "none" 
+					for space in self.spacesOccupiedBy(activeShip, 
+													   numlet))):
+				numlet = self.convertCoordToNumLet((randint(4, 
+					self.convertNumLetToCoord(
+					self.boundaries[activeShip])[0]), 
+					randint(4, self.convertNumLetToCoord(
+					self.boundaries[activeShip])[1])))
+			self.placeAShipParchment(numlet, activeShip)
 
 	def placeAShipParchment (self, numLet, shipType):
+		""" Place a given ship with its bow at the given location.
+		
+		Determine what type of ship is specified regardless of 
+		orientation, and record the slot appropriately. Place the ship 
+		on the canvas at the specified location, and keep this image's
+		ID in the recorded slot in the hiddenShips list for later use.
+		Also, hide this ship - it will be revealed at the end of the
+		game. Also, set the parchment grid to have the appropriate ship
+		type recorded in the slots it occupies.
+		"""
 		if shipType == "longshipV" or shipType == "longship":
 			slot = 0
 		elif shipType == "frigateV" or shipType == "frigate":
@@ -304,18 +339,34 @@ class Battleship():
 			
 	# MAP FUNCTIONALITY		
 	def placeOnCanvas (self, whichCanvas, item, location):
+		""" Create an item at a given location on the given canvas.
+		
+		Convert a simplified instruction into a canvas instruction. Use
+		the given item to find an image in the image list, and use the
+		NumLet to place it at the appropriate location on the specified
+		canvas. Return the image ID.
+		"""
 		return whichCanvas.create_image(self.convertNumLetToCoord (
 										location), 
 										image=self.__images[item],
 										anchor=NW)
 		
 	def hideGhostShip (self, mouseleave):
+		""" Hide the ship that follows the cursor on the ocean. """
 		self.ocean.itemconfig(self.__ghostShip, state=HIDDEN)
 	
 	def hideGhostX (self, mouseleave):
+		""" Hide the X that follows the cursor on the parchment. """
 		self.parchment.itemconfig(self.__ghostX, state=HIDDEN)
 	
 	def mouseOverOcean (self, mouse):
+		""" Track the cursor and move the ghost ship accordingly.
+		
+		Track the cursor and determine what NumLet it's hovering over,
+		and move the ghost ship there, making sure it's visible. Ensure
+		that if the cursor moves outside that ship's boundaries, the 
+		ghost ship remains in the closest space it CAN occupy.
+		"""
 		if self.__ghostShipType != "none":
 			locationNumLet = self.convertMouseToNumLet(mouse)
 			locationCoord = self.convertNumLetToCoord(locationNumLet)
@@ -340,6 +391,7 @@ class Battleship():
 				self.ocean.itemconfig(self.__ghostShip, state=NORMAL)
 	
 	def mouseOverParchment (self, mouse):
+		""" Track the cursor position and move the ghost X to it. """
 		if self.__phase == "attack":
 			locationNumLet = self.convertMouseToNumLet(mouse)
 			locationCoord = self.convertNumLetToCoord(locationNumLet)
@@ -347,6 +399,13 @@ class Battleship():
 			self.parchment.itemconfig(self.__ghostX, state=NORMAL)
 	
 	def placeShipsUpdate (self):
+		""" Update the "place ship" prompt and ghost ship sprite.
+		
+		Based on how many ships have been placed, update the message
+		prompting the player to place their ships. Change the ghost
+		ship sprite to match. When all ships have been placed, move
+		into the next phase and hide the ghost ship.
+		"""
 		if self.__shipsPlaced == 0:
 			self.__message.set(
 					"LEFT CLICK on the ocean to place your LONGSHIP.\n" 
@@ -385,6 +444,7 @@ class Battleship():
 	
 	# MAP INTERACTION
 	def rotateGhostShip (self, mouseclick):
+		""" Toggle whether the ghost ship is vertical or horizontal. """
 		if self.__ghostShipType == "longship":
 			self.__ghostShipType = "longshipV"
 		elif self.__ghostShipType == "frigate":
@@ -409,6 +469,14 @@ class Battleship():
 							  image=self.__images[self.__ghostShipType])
 							  
 	def oceanLClick (self, leftclick):
+		""" Convert valid clicks into ship locations. 
+		
+		When a ghost ship is ready to be placed, convert click location
+		into a NumLet. If the mouse is outside the ship's boundaries,
+		use the nearest valid NumLet. If the resulting ship would 
+		intersect an already existing ship, do nothing. Otherwise, place
+		the appropriate ship at the NumLet.
+		"""
 		locationNumLet = self.convertMouseToNumLet(leftclick)
 		if self.__ghostShipType != "none":
 			if (locationNumLet[0] <= 
@@ -428,6 +496,15 @@ class Battleship():
 					locationNumLet[1]))
 	
 	def parchmentLClick (self, mouseclick):
+		""" Process a turn: player attack, CPU attack, victory check.
+		
+		Convert a mouse click location into a NumLet. If the location on
+		the parchment grid has not been attacked, process the player's
+		attack, then generate the CPU's attack. Change the commentary
+		message appropriately to accurately display where both player
+		and CPU attacked, whether they hit, and if appropriate, other
+		information about what was hit/sunk. Then check for a victory.
+		"""
 		if self.__phase == "attack":
 			if self.parchmentGrid[self.convertMouseToNumLet(
 					mouseclick)]["IsHit"] is False:
@@ -446,6 +523,13 @@ class Battleship():
 				self.checkVictory()
 	
 	def placeAShipOcean (self, numLet):
+		""" Place a ship on the ocean if it fits, update ship placement.
+		
+		If a ship fits at the NumLet, place it there. In the ocean grid,
+		record the appropriate ship type as occupying all appropriate
+		spaces. Increment the number of ships successfully placed, and
+		call the ship placement prompt update.
+		"""
 		if (all(self.oceanGrid[space]["WhatShip"] == "none" 
 				for space in self.spacesOccupiedBy(self.__ghostShipType, 
 												   numLet))):
@@ -458,16 +542,22 @@ class Battleship():
 				
 	# GENERAL FUNCTIONALITY			
 	def convertMouseToNumLet (self, mouse):
-		number = int((mouse.x - 4) / 24) + 1
-		letter = chr(65+int((mouse.y - 4) / 24))
-		# If something out of bounds is produced, bring it back in.
-		if number > 10:
-			number = 10
-		if letter == 'K':
-			letter = 'J'
-		return (number, letter)
+		""" Convert mouse coordinates to game grid coordinates.
+		
+		Create a coordinate list from the mouse coordinates, and pass it
+		into convertCoordToNumLet to convert from a format like 
+		(137, 105) into a NumLet like (6, 'E').
+		"""
+		coord = [mouse.x, mouse.y]
+		return self.convertCoordToNumLet (coord)
 	
 	def convertCoordToNumLet (self, coordinates):
+		""" Convert canvas coordinates to game grid coordinates.
+		
+		Convert from a format like (137, 105) into a NumLet like 
+		(6, 'E'). NumLets are far more useful in this grid-based game
+		than actual pixel coordinates.
+		"""
 		number = int((coordinates[0] - 4) / 24) + 1
 		letter = chr(65+int((coordinates[1] - 4) / 24))
 		# If something out of bounds is produced, bring it back in.
@@ -478,9 +568,16 @@ class Battleship():
 		return (number, letter)
 	
 	def convertNumLetToCoord (self, NumLet):
+		""" Convert NumLet into pixel coordinate of its NW corner."""
 		return (3 + (NumLet[0]-1)*24, 3 + (ord(NumLet[1])-65)*24)
 	
 	def spacesOccupiedBy (self, whatship, bowLocation):
+		""" Generate list of squares occupied by a ship.
+		
+		Based on a given ship orientation and type, and the location of
+		its bow, create a list of the NumLets for the grid tiles that
+		are occupied by the ship.
+		"""
 		occupied = []
 		# Horizontal ships
 		if (whatship == "longship" or whatship == "frigate" or 
@@ -515,6 +612,22 @@ class Battleship():
 		return occupied
 		
 	def processAttack (self, numLet, whichMap):
+		""" Process an attack on either map and place an image.
+		
+		Process an attack on the specified map at the specified NumLet.
+		If that space has already been attacked, do nothing. If not,
+		determine whether the attack hit a ship. If the attack was on
+		the player and it missed, place a splash in the appropriate
+		ocean square. If it was on the CPU, place a white X on the
+		parchment square. If it hit a ship, place the appropriate icon
+		and decrement the ship's health. For the player, the icon is 
+		fire, which is also placed in the appropriate quickview ship
+		box. On the parchment, it's a red X. Either way, set up a 
+		message for the turn recap. If the player hit a ship, tell them
+		so, but only tell what ship it was if they sunk it. If the CPU
+		hit a player ship, the message includes what ship it was - and
+		also if they sunk it.
+		"""
 		whichGrid = self.oceanGrid
 		if self.parchment == whichMap:
 			whichGrid = self.parchmentGrid
@@ -561,6 +674,7 @@ class Battleship():
 		return (numLet, didHit)
 		
 	def checkVictory (self):
+		""" Check for game over and end interactivity if appropriate."""
 		if (self.CPUShips["longship"] == 0 and 
 				self.CPUShips["frigate"] == 0 and 
 				self.CPUShips["schooner"] == 0 and
@@ -592,7 +706,7 @@ class Battleship():
 										  state=NORMAL)
 		
 	def run(self):
-		""" Run Battleship"""
+		""" Run Battleship. """
 		self.root.mainloop()
 	
 
