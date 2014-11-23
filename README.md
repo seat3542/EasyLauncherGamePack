@@ -47,7 +47,7 @@ a GNU GPL-compatible license.
 <p>
 <h5>Coding Standards</h5>
 ALL languages must have function descriptions. <br />
-* PYTHON: http://legacy.python.org/dev/peps/pep-0008/  <br />
+* PYTHON: http://legacy.python.org/dev/peps/pep-0008/ 
 * C:
  * General style: http://users.ece.cmu.edu/~eno/coding/CCodingStandard.html 
  * Allman Bracketing: http://en.wikipedia.org/wiki/Indent_style#Allman_style
