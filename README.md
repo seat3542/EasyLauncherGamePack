@@ -55,14 +55,14 @@ they have abandoned it and the bug is free to be claimed by someone else.</p>
  * Function header style:
 
         ```C
-        /*****************************************************************************
+        /****************************************************************************
          * Function:     functionName
          * Description:  Description goes here.
          *               Additional lines like this.
          * Parameters:   parameter1  -  explanation
          *               param2      -  explanation
          * Returns:      returnvalue -  explanation                
-         ****************************************************************************/
+         ***************************************************************************/
         double functionName (int parameter1, char param2)
         // Function code happens down here
         ```
