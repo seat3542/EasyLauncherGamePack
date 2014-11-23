@@ -1,4 +1,12 @@
 <p>
+
+1. This is a numbered list.
+2. I'm going to include a fenced code block as part of this bullet:
+
+    ```
+    Code
+    More Code
+    ```
 <h3>EASY LAUNCHER GAME PACK</h3>
 <h4>originally created by littlefiredragon & seat3542</h4> <br />
 Readme Last Updated: Nov 22 2014 
@@ -55,14 +63,12 @@ a GNU GPL-compatible license.
 ALL languages must have function descriptions. <br />
 <ul>
 <li>PYTHON: http://legacy.python.org/dev/peps/pep-0008/ </li>
-
 <li>C:
  <ul>
   <li>General style: http://users.ece.cmu.edu/~eno/coding/CCodingStandard.html </li>
   <li>Allman Bracketing: http://en.wikipedia.org/wiki/Indent_style#Allman_style </li>
   <li>functionNamesLikeThis </li>
-  <li>
-    ````Code example````</li>
+  <li></li>
  </ul>
 </li>
 <li>C++:    http://www.possibility.com/Cpp/CppCodingStandard.html </li>
