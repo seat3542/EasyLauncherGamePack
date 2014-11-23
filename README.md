@@ -10,6 +10,12 @@ system for various open source games. Feel free to contribute a game under
 a GNU GPL-compatible license. 
 </p>
 <p>
+<h4>Dependencies</h4>
+<ul>
+<li>tkinter</li>
+</ul>
+</p>
+<p>
 <h4>How to Build the Code</h4>
 </p>
 <p>
