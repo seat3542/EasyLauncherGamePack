@@ -46,19 +46,19 @@ a GNU GPL-compatible license.
 </p>
 <p>
 <h5>Coding Standards</h5>
- ALL languages must have function descriptions. <br />
- * PYTHON: http://legacy.python.org/dev/peps/pep-0008/  <br />
- * C:
-  * General style: http://users.ece.cmu.edu/~eno/coding/CCodingStandard.html 
-  * Allman Bracketing: http://en.wikipedia.org/wiki/Indent_style#Allman_style
-  * functionNamesLikeThis<br />
- * C++:    http://www.possibility.com/Cpp/CppCodingStandard.html  <br />
- * JAVA:  <br />
- If you use a language not yet listed, please add it to this list.
+ALL languages must have function descriptions. <br />
+* PYTHON: http://legacy.python.org/dev/peps/pep-0008/  <br />
+* C:
+ * General style: http://users.ece.cmu.edu/~eno/coding/CCodingStandard.html 
+ * Allman Bracketing: http://en.wikipedia.org/wiki/Indent_style#Allman_style
+ * functionNamesLikeThis<br />
+* C++:    http://www.possibility.com/Cpp/CppCodingStandard.html
+* JAVA:  <br />
+If you use a language not yet listed, please add it to this list.
 </p>
 <p>
 <h5>Testing</h5>
- <standards go here> <br />
- This project has been tested on:  <br />
-  - openSUSE 13.1 64 bit 
+All programs should be functional and complete before being added to the launcher. We expect they have been tested for major bugs. It should be ready for release. As such we have no policy on unittesting or anything of that nature, as there should be only minor bugs at worst. <br />
+This project has been tested on:  <br />
+ * openSUSE 13.1 64 bit 
 </p>
