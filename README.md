@@ -47,13 +47,19 @@ a GNU GPL-compatible license.
 <p>
 <h5>Coding Standards</h5>
 ALL languages must have function descriptions. <br />
-* PYTHON: http://legacy.python.org/dev/peps/pep-0008/ 
-* C:
- * General style: http://users.ece.cmu.edu/~eno/coding/CCodingStandard.html 
- * Allman Bracketing: http://en.wikipedia.org/wiki/Indent_style#Allman_style
- * functionNamesLikeThis<br />
-* C++:    http://www.possibility.com/Cpp/CppCodingStandard.html
-* JAVA:  <br />
+<ul>
+<li>PYTHON: http://legacy.python.org/dev/peps/pep-0008/ </li>
+
+<li>C:
+ <ul>
+  <li>General style: http://users.ece.cmu.edu/~eno/coding/CCodingStandard.html </li>
+  <li>Allman Bracketing: http://en.wikipedia.org/wiki/Indent_style#Allman_style </li>
+  <li>functionNamesLikeThis </li>
+ </ul>
+</li>
+<li>C++:    http://www.possibility.com/Cpp/CppCodingStandard.html </li>
+<li>JAVA:  </li>
+</ul>
 If you use a language not yet listed, please add it to this list.
 </p>
 <p>
