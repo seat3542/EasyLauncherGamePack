@@ -52,11 +52,18 @@ they have abandoned it and the bug is free to be claimed by someone else.</p>
  * General style: http://users.ece.cmu.edu/~eno/coding/CCodingStandard.html 
  * Allman Bracketing: http://en.wikipedia.org/wiki/Indent_style#Allman_style 
  * functionNamesLikeThis 
- * Header style:
+ * Function header style:
 
         ```C
-        code
-        goes here
+        /*****************************************************************************
+        * Function:     functionName
+        * Description:  Description goes here.
+        *               Additional lines like this.
+        * Parameters:   parameter1  -  explanation
+        *               param2      -  explanation
+        * Returns:      returnvalue -  explanation                
+        *****************************************************************************/
+        void functionName (int parameter1, char param2)
         ```
 
 * C++: http://www.possibility.com/Cpp/CppCodingStandard.html
