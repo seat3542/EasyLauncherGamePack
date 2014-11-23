@@ -43,21 +43,18 @@ they have abandoned it and the bug is free to be claimed by someone else.</p>
    littlefiredragon or seat3542. If a pull request gets 3 negative reviews
    it is to be rejected.
 
+
 <h5>Coding Standards</h5>
-ALL languages must have function descriptions. <br />
-<ul>
-<li>PYTHON: http://legacy.python.org/dev/peps/pep-0008/ </li>
-<li>C:
- <ul>
-  <li>General style: http://users.ece.cmu.edu/~eno/coding/CCodingStandard.html </li>
-  <li>Allman Bracketing: http://en.wikipedia.org/wiki/Indent_style#Allman_style </li>
-  <li>functionNamesLikeThis </li>
-  <li></li>
- </ul>
-</li>
-<li>C++:    http://www.possibility.com/Cpp/CppCodingStandard.html </li>
-<li>JAVA:  </li>
-</ul>
+<p>ALL languages must have function descriptions. </p>
+
+* PYTHON: http://legacy.python.org/dev/peps/pep-0008/ 
+* C:
+ * General style: http://users.ece.cmu.edu/~eno/coding/CCodingStandard.html 
+ * Allman Bracketing: http://en.wikipedia.org/wiki/Indent_style#Allman_style 
+ * functionNamesLikeThis 
+ * code
+* C++: http://www.possibility.com/Cpp/CppCodingStandard.html
+* JAVA:  
 <p>If you use a language not yet listed, please add it to this list.</p>
 
 <h5>Testing</h5>
