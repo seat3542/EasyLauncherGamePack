@@ -52,7 +52,11 @@ they have abandoned it and the bug is free to be claimed by someone else.</p>
  * General style: http://users.ece.cmu.edu/~eno/coding/CCodingStandard.html 
  * Allman Bracketing: http://en.wikipedia.org/wiki/Indent_style#Allman_style 
  * functionNamesLikeThis 
- * code
+ * Header style:
+ ```C
+s = "I've almost got this"
+print s
+```
 * C++: http://www.possibility.com/Cpp/CppCodingStandard.html
 * JAVA:  
 <p>If you use a language not yet listed, please add it to this list.</p>
