@@ -64,6 +64,7 @@ they have abandoned it and the bug is free to be claimed by someone else.</p>
         * Returns:      returnvalue -  explanation                
         *****************************************************************************/
         double functionName (int parameter1, char param2)
+        // Function code happens down here
         ```
 
 * C++: http://www.possibility.com/Cpp/CppCodingStandard.html
