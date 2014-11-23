@@ -61,7 +61,7 @@ ALL languages must have function descriptions. <br />
   <li>General style: http://users.ece.cmu.edu/~eno/coding/CCodingStandard.html </li>
   <li>Allman Bracketing: http://en.wikipedia.org/wiki/Indent_style#Allman_style </li>
   <li>functionNamesLikeThis </li>
-  <li>```Code example```
+  <li>```Code example```</li>
  </ul>
 </li>
 <li>C++:    http://www.possibility.com/Cpp/CppCodingStandard.html </li>
