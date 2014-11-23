@@ -1,12 +1,4 @@
 <p>
-
-1. This is a numbered list.
-2. I'm going to include a fenced code block as part of this bullet:
-
-    ```
-    Code
-    More Code
-    ```
 <h3>EASY LAUNCHER GAME PACK</h3>
 <h4>originally created by littlefiredragon & seat3542</h4> <br />
 Readme Last Updated: Nov 22 2014 
