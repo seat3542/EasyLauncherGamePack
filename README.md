@@ -63,7 +63,7 @@ they have abandoned it and the bug is free to be claimed by someone else.</p>
         *               param2      -  explanation
         * Returns:      returnvalue -  explanation                
         *****************************************************************************/
-        void functionName (int parameter1, char param2)
+        double functionName (int parameter1, char param2)
         ```
 
 * C++: http://www.possibility.com/Cpp/CppCodingStandard.html
