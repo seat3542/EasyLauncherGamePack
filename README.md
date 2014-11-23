@@ -65,6 +65,8 @@ If you use a language not yet listed, please add it to this list.
 <p>
 <h5>Testing</h5>
 All programs should be functional and complete before being added to the launcher. We expect they have been tested for major bugs. It should be ready for release. As such we have no policy on unittesting or anything of that nature, as there should be only minor bugs at worst. <br />
-This project has been tested on:  <br />
- * openSUSE 13.1 64 bit 
+This project has been tested on:  
+<ul>
+<li>openSUSE 13.1 64 bit</li>
+</ul>
 </p>
