@@ -1,5 +1,5 @@
 <h3>EASY LAUNCHER GAME PACK</h3>
-<h4>originally created by littlefiredragon & seat3542</h4> <br />
+<h4>originally created by littlefiredragon & seat3542</h4>
 <p>Readme Last Updated: Nov 22 2014</p>
 
 <h4>Description</h4>
