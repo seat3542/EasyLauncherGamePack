@@ -48,11 +48,11 @@ they have abandoned it and the bug is free to be claimed by someone else.</p>
 <p>ALL languages must have function descriptions. </p>
 
 * PYTHON: http://legacy.python.org/dev/peps/pep-0008/ 
-* C:
+* C: 
  * General style: http://users.ece.cmu.edu/~eno/coding/CCodingStandard.html 
  * Allman Bracketing: http://en.wikipedia.org/wiki/Indent_style#Allman_style 
  * functionNamesLikeThis 
- * Function header style:
+ * Function header style: 
 
         ```C
         /****************************************************************************
@@ -66,9 +66,8 @@ they have abandoned it and the bug is free to be claimed by someone else.</p>
         double functionName (int parameter1, char param2)
         // Function code happens down here
         ```
-
-* C++: http://www.possibility.com/Cpp/CppCodingStandard.html
-* JAVA:  
+* C++: http://www.possibility.com/Cpp/CppCodingStandard.html 
+* JAVA: 
 <p>If you use a language not yet listed, please add it to this list.</p>
 
 <h5>Testing</h5>
