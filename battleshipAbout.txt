@@ -1,0 +1,5 @@
+Play the classic board game Battleship on your computer. 
+Place your ships on the ocean and shoot at your enemy's ships. 
+Deduce their locations from the success and failure of your attacks, and systematically sink the enemy fleet.
+
+Graphics created by LittleFireDragon
