@@ -57,13 +57,22 @@ meter. This damage can sink the player's ship.
 
 <h5>Pull Requests</h5>
 1. A pull request that only adds a new game and does not change the 
-   other files in any other way needs only 1 positive review.
+   other files in any other way needs only 1 positive review. This
+   review is to be given by someone who has tested the submitted game to
+   determine that it is functional and playable. Rule of thumb:
+   Would you commercially release a game in this state of completion? If
+   so, the game is playable and functional, and therefore fit for release.
 2. Extremely minor edits like fixing a typo need no reviews and can be
    accepted by their own creator.
 3. Larger edits that change already-existing files beyond merely adding
    a new game to the launcher must get 3 positive reviews or an okay from
    littlefiredragon or seat3542. If a pull request gets 3 negative reviews
    it is to be rejected.
+4. Feature requests are to be submitted on Github Issues. The first line
+   of the issue should indicate what game it is for, or that it is for the
+   launcher. If it gets 3 positive reviews or an okay from littlefiredragon
+   or seat3542, the feature request is considered open for claiming.
+   Claiming a feature request functions identically to claiming a bug.
 
 
 <h5>Coding Standards</h5>
@@ -90,11 +99,11 @@ meter. This damage can sink the player's ship.
         ```
         
 * C++: http://www.possibility.com/Cpp/CppCodingStandard.html 
-* JAVA: 
+* JAVA: TBA
 <p>If you use a language not yet listed, please add it to this list.</p>
 
 <h5>Testing</h5>
-<p>All programs should be functional and complete before being added to the launcher. We expect they have been tested for major bugs. It should be ready for release. As such we have no policy on unittesting or anything of that nature, as there should be only minor bugs at worst. <br />
+<p>All programs should be functional and complete before being added to the launcher. We expect they have been tested for major bugs. These games should be ready for release. As such we have no standard policy on unittesting or anything of that nature, as there should be only minor bugs at worst. <br />
 This project has been tested on:  </p>
 <ul>
 <li>openSUSE 13.1 64 bit</li>
