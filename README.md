@@ -1,6 +1,6 @@
 <h3>EASY LAUNCHER GAME PACK</h3>
 <h4>originally created by littlefiredragon & seat3542</h4>
-<p>Readme Last Updated: Nov 22 2014</p>
+<p>Readme Last Updated: Dec 1 2014</p>
 
 <h4>Description</h4>
 <p>Easy Launcher Game Pack is, as its name suggests, an easy-to-use launcher
@@ -27,11 +27,33 @@ with the GPL license. Graphics and other arts included are licensed as
 Creative Commons Attribution-Noncommercial-Sharealike.</p>
 
 <h5>Bug Reports</h5>
+<h6>Claiming a Bug</h6>
 <p>Bugs are to be reported through github issues and an issue is to be 
 claimed before resolving it. If an issue has been claimed but the one who
 claimed it has neither resolved it nor reported any progress via comments
 on the issue page within four weeks of claiming it, it is assumed that
 they have abandoned it and the bug is free to be claimed by someone else.</p>
+<h6>Submitting a Bug</h6>
+<p>The first line of a bug report should indicate where the bug occurs:
+either the game it is part of, or that it occurs in the launcher. There should
+be a section labeled BUG TRIGGERS which describes what causes the bug to occur; 
+essentially, instructions on how to reproduce the error. Be sure to include 
+the situation and player input (if applicable) that cause the bug. There should 
+also be a section called DESCRIPTION that describes what the bug actually does.</p>
+<h6>Sample Bug Report</h6>
+```
+BATTLESHIP
+BUG TRIGGERS:
+Player attacks vertically oriented enemy sloop. Bug appears to occur 
+regardless of what other ships have been hit/sunk by the player and 
+by the computer. Bug appears to be unrelated to the number of turns 
+taken, or position/orientation of player's ships. Bug does not occur
+with horizontally oriented enemy sloop.
+DESCRIPTION:
+Red X appears correctly on the map. Fire does not appear on player's
+map, but player's own sloop takes damage as indicated by the damage
+meter. This damage can sink the player's ship.
+```
 
 <h5>Pull Requests</h5>
 1. A pull request that only adds a new game and does not change the 
