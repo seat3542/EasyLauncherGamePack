@@ -3,3 +3,5 @@ Avoid hitting the mines by deducing their locations from the numbers on the unco
 Left click to uncover a tile and reveal how many mines border it. 
 Right click a covered tile to flag it as a potential bomb. Right click again to remove the flag.
 Once all non-bomb tiles are uncovered, you win!
+
+Graphics created by LittleFireDragon
