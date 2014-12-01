@@ -71,12 +71,17 @@ meter. This damage can sink the player's ship.
 3. Larger edits that change already-existing files beyond merely adding
    a new game to the launcher must get 3 positive reviews or an okay from
    littlefiredragon or seat3542. If a pull request gets 3 negative reviews
-   it is to be rejected.
+   it is to be rejected. Positive reviews are not to be given without at
+   the very least carefully reading the new code, and preferably not given
+   without testing the code.
 4. Feature requests are to be submitted on Github Issues. The first line
    of the issue should indicate what game it is for, or that it is for the
    launcher. If it gets 3 positive reviews or an okay from littlefiredragon
    or seat3542, the feature request is considered open for claiming.
    Claiming a feature request functions identically to claiming a bug.
+   Submitting a feature request is optional; one can simply make a pull
+   request with the modification already in place, and it will be subject
+   to Pull Request Rule 3 as normal.
 
 
 <h5>Coding Standards</h5>
