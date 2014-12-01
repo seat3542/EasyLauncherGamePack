@@ -10,6 +10,7 @@ a GNU GPL-compatible license.</p>
 <h4>Dependencies</h4>
 <ul>
 <li>tkinter</li>
+<li>Python 3</li>
 </ul>
 
 <h4>How to Build the Code</h4>
