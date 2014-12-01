@@ -24,7 +24,11 @@ a GNU GPL-compatible license.</p>
 <h5>Licence</h5>
 <p>This project is licensed under GNU GPL. All components must be compatible
 with the GPL license. Graphics and other arts included are licensed as
-Creative Commons Attribution-Noncommercial-Sharealike.</p>
+Creative Commons Attribution-Noncommercial-Sharealike. Attribution can be in
+the game or in the game's description file. As this is an open source project,
+should any part of the project containing creative commons licensed media be
+reused elsewhere without also reusing the part containing the attribution, the 
+reused part in question must be modified to contain the attribution.</p>
 
 <h5>Bug Reports</h5>
 <h6>Claiming a Bug</h6>
@@ -40,7 +44,7 @@ be a section labeled BUG TRIGGERS which describes what causes the bug to occur;
 essentially, instructions on how to reproduce the error. Be sure to include 
 the situation and player input (if applicable) that cause the bug. There should 
 also be a section called DESCRIPTION that describes what the bug actually does.</p>
-<h6>Sample Bug Report</h6>
+<h6>Example Bug Report</h6>
 ```
 BATTLESHIP
 BUG TRIGGERS:
