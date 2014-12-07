@@ -19,7 +19,28 @@ a GNU GPL-compatible license.</p>
 
 
 <h4>How to Add a Game</h4>
+<p>To add a game, simply edit Buttons.txt. Place your game on a new line with
+the following format: 
+Name of your button;File path to your game;Name of executable;Name of About File;
+*Note*
+Make sure each piece of information on the line is seperated by a semicolon as
+shown above. There should be NO spaces before and after the semicolons. Make sure to
+end each line with a semicolon. Incorrect formatting can result in file paths not 
+being found and would not allow your game to launch successfully. The file path to
+your game is simply where your executable is located. Name of execuatable must include
+relevant extensions (.py for python, .cpp for c++, etc.) and the about file should
+be in standard .txt format. Here's an example within our own project:
 
+BattleShip;battleship;battleship.py;DEFAULT.txt;
+
+If you do not have an About file, please use DEFAULT.txt. Do not leave that portion
+blank. Note that the above file path would look different for code written in java.
+For example java code might look like the following:
+
+BattleShip;battleship/src;battleship.py;DEFAULT.txt;
+
+Do not place a blank line at the bottom of the file.Please follow the format exactly 
+when contributing to the project, otherwise it will result in a bug. 
 
 <h4>Rules of Contribution</h4>
 <h5>Licence</h5>
