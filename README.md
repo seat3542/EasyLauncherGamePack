@@ -22,7 +22,9 @@ a GNU GPL-compatible license.</p>
 <p>To add a game, simply edit Buttons.txt. Place your game on a new line with
 the following format: 
 Name of your button;File path to your game;Name of executable;Name of About File;
+
 *Note*
+
 Make sure each piece of information on the line is seperated by a semicolon as
 shown above. There should be NO spaces before and after the semicolons. Make sure to
 end each line with a semicolon. Incorrect formatting can result in file paths not 
