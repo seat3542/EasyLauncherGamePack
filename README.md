@@ -109,7 +109,7 @@ meter. This damage can sink the player's ship.
         ```
         
 * C++: http://www.possibility.com/Cpp/CppCodingStandard.html 
-* JAVA: To be announced
+* JAVA: http://www.oracle.com/technetwork/java/codeconvtoc-136057.html
 <p>If you use a language not yet listed, please add it to this list.</p>
 
 <h5>Testing</h5>
