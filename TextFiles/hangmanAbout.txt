@@ -1,0 +1,3 @@
+Play hangman on your computer.
+Guess the letters in a random word before the stick figure is hanged for your mistakes.
+Correct guesses will reveal letters, but incorrect guesses will bring the stick figure closer to its demise.

@@ -31,17 +31,18 @@ end each line with a semicolon. Incorrect formatting can result in file paths no
 being found and would not allow your game to launch successfully. The file path to
 your game is simply where your executable is located. Name of execuatable must include
 relevant extensions (.py for python, .cpp for c++, etc.) and the about file should
-be in standard .txt format. Here's an example within our own project:
+be in standard .txt format.
 
+<h6>Example formatting in Buttons.txt </h6>
+```
+Python
 BattleShip;battleship;battleship.py;DEFAULT.txt;
-
-If you do not have an About file, please use DEFAULT.txt. Do not leave that portion
-blank. Note that the above file path would look different for code written in java.
-For example java code might look like the following:
-
+Java
 BattleShip;battleship/src;battleship.py;DEFAULT.txt;
+```
 
-Do not place a blank line at the bottom of the file.Please follow the format exactly 
+<p>If you do not have an About file, please use DEFAULT.txt. Do not leave that portion
+blank.Do not place a blank line at the bottom of the file.Please follow the format exactly 
 when contributing to the project, otherwise it will result in a bug. 
 
 <h4>Rules of Contribution</h4>
